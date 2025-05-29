@@ -55,4 +55,8 @@ export class Category {
       id ?? randomUUID()
     )
   }
+
+  static restore(props: CategoryProps, id: string): Category {
+    return new Category({ ...props }, id)
+  }
 }
