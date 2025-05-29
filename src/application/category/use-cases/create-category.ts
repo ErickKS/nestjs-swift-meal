@@ -6,7 +6,7 @@ interface CreateCategoryInput {
 }
 
 interface CreateCategoryOutput {
-  category: Category
+  categoryId: string
 }
 
 export class CreateCategoryUseCase {
@@ -18,7 +18,7 @@ export class CreateCategoryUseCase {
     const category = Category.create(input)
     await this.categoryRepository.save(category)
     return {
-      category,
+      categoryId: category.id,
     }
   }
 }
