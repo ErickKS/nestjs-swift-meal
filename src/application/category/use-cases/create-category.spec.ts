@@ -1,0 +1,32 @@
+import { Category } from '@/domain/category/category'
+import { InMemoryCategoryRepository } from 'test/repositories/in-memory-category-repository'
+import { CreateCategoryUseCase } from './create-category'
+
+let categoryRepository: InMemoryCategoryRepository
+let sut: CreateCategoryUseCase
+
+describe('Create Category Use Case', () => {
+  beforeEach(() => {
+    categoryRepository = new InMemoryCategoryRepository()
+    sut = new CreateCategoryUseCase(categoryRepository)
+  })
+
+  it('should create a category', async () => {
+    const input = {
+      name: 'Category Name',
+    }
+    const result = await sut.execute(input)
+    expect(result.category.id).toBeDefined()
+    expect(result.category.name).toBe('Category Name')
+    expect(categoryRepository.categories).toHaveLength(1)
+  })
+
+  it('should not create a category with existing name', async () => {
+    const input = {
+      name: 'Category Name',
+    }
+    const newCategory = Category.create(input)
+    await categoryRepository.save(newCategory)
+    await expect(sut.execute(input)).rejects.toThrowError('Category already exists')
+  })
+})
