@@ -1,0 +1,13 @@
+name: swift-meal
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/api?schema=public
+    ports:
+      - 3333:3333
+    volumes:
+      - .:/usr/src/app
