@@ -8,7 +8,18 @@ export class InMemoryCategoryRepository implements CategoryRepository {
     return this.categories.some(category => category.name === name)
   }
 
+  async findById(id: string): Promise<Category | null> {
+    return this.categories.find(category => category.id === id) || null
+  }
+
   async save(category: Category): Promise<void> {
     this.categories.push(category)
+  }
+
+  async update(category: Category): Promise<void> {
+    const index = this.categories.findIndex(i => i.id === category.id)
+    if (index !== -1) {
+      this.categories[index] = category
+    }
   }
 }
