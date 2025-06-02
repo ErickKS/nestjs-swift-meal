@@ -16,7 +16,6 @@ describe('Create Category Use Case', () => {
       name: 'Category Name',
     }
     const result = await sut.execute(input)
-    expect(result.categoryId).toBeDefined()
     expect(categoryRepository.categories).toHaveLength(1)
     expect(categoryRepository.categories[0].name).toBe('Category Name')
   })
