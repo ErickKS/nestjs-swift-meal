@@ -1,4 +1,4 @@
-import crypto from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 
 export class UniqueEntityID {
   private constructor(private readonly _value: string) {}
@@ -8,7 +8,7 @@ export class UniqueEntityID {
   }
 
   private static generate(): string {
-    return crypto.randomUUID()
+    return randomUUID()
   }
 
   static create(aString?: string): UniqueEntityID {
