@@ -5,10 +5,10 @@ import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
 
-const exampleBodySchema = z.object({
+const createCategoryBodySchema = z.object({
   name: z.string().min(1),
 })
-type ExampleBodySchema = z.infer<typeof exampleBodySchema>
+type CreateCategoryBodySchema = z.infer<typeof createCategoryBodySchema>
 
 @Controller('/category')
 @ApiTags('Category')
@@ -17,8 +17,8 @@ export class CreateCategoryController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(exampleBodySchema))
-  @ApiBody({ schema: zodToOpenAPI(exampleBodySchema) })
+  @UsePipes(new ZodValidationPipe(createCategoryBodySchema))
+  @ApiBody({ schema: zodToOpenAPI(createCategoryBodySchema) })
   @ApiResponse({ status: 201, description: 'Created' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 422, description: 'Unprocessable Entity' })
@@ -26,7 +26,7 @@ export class CreateCategoryController {
     summary: 'Create new category',
     description: 'This endpoint allows you to create an category.',
   })
-  async handle(@Body() body: ExampleBodySchema) {
+  async handle(@Body() body: CreateCategoryBodySchema) {
     try {
       await this.createCategory.execute({ name: body.name })
     } catch (error) {

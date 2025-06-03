@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 
-describe('[POST] /example', () => {
+describe('[POST] /category', () => {
   let app: INestApplication
 
   beforeAll(async () => {
