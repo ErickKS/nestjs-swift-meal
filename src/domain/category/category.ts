@@ -8,7 +8,7 @@ export interface CategoryProps {
   updatedAt: Date
 }
 
-interface CreateCategoryProps {
+export interface CreateCategoryProps {
   name: string
   createdAt?: Date
   updatedAt?: Date
