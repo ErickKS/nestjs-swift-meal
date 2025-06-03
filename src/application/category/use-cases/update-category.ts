@@ -19,7 +19,7 @@ export class UpdateCategoryUseCase {
     const category = await this.categoryRepository.findById(categoryId)
     if (!category) throw new Error('Category not found')
     const existingCategory = await this.categoryRepository.existsByName(name)
-    if (existingCategory) throw new Error('Category already exists')
+    if (existingCategory) throw new Error(`Category '${name}' already exists`)
     category.name = name
     await this.categoryRepository.update(category)
     return {

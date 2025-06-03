@@ -47,6 +47,6 @@ describe('Update Category Use Case', () => {
       categoryId: 'category-2',
       name: 'Category X',
     }
-    await expect(sut.execute(input)).rejects.toThrowError('Category already exists')
+    await expect(sut.execute(input)).rejects.toThrowError(`Category '${input.name}' already exists`)
   })
 })
