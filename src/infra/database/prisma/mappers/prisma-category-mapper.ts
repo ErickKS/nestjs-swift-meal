@@ -6,6 +6,9 @@ export class PrismaCategoryMapper {
     return Category.create(
       {
         name: raw.name,
+        createdAt: raw.createdAt,
+        updatedAt: raw.updatedAt,
+        deletedAt: raw.deletedAt ?? undefined,
       },
       raw.id
     )
@@ -17,6 +20,7 @@ export class PrismaCategoryMapper {
       name: Category.name,
       createdAt: Category.createdAt,
       updatedAt: Category.updatedAt,
+      deletedAt: Category.deletedAt,
     }
   }
 }

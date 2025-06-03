@@ -56,7 +56,10 @@ export class PrismaCategoryRepository implements CategoryRepository {
     const data = PrismaCategoryMapper.toPrisma(category)
     await this.prisma.category.update({
       where: { id: category.id },
-      data,
+      data: {
+        deletedAt: data.deletedAt,
+        updatedAt: data.updatedAt,
+      },
     })
   }
 }
