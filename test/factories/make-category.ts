@@ -21,11 +21,9 @@ export class CategoryFactory {
 
   async makePrismaQuestion(data: Partial<CreateCategoryProps> = {}): Promise<Category> {
     const question = makeCategory(data)
-
     await this.prisma.category.create({
       data: PrismaCategoryMapper.toPrisma(question),
     })
-
     return question
   }
 }

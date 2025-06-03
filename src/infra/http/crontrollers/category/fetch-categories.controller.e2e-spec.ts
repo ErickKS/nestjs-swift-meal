@@ -19,15 +19,16 @@ describe('[GET] /categories', () => {
     await app.init()
   })
 
-  test('should fetch all categories ordered by name', async () => {
+  test('should fetch all active categories ordered by name asc by default', async () => {
+    await categoryFactory.makePrismaQuestion({ name: 'Category 3' })
     await categoryFactory.makePrismaQuestion({ name: 'Category 2' })
-    await categoryFactory.makePrismaQuestion({ name: 'Category 1' })
+    await categoryFactory.makePrismaQuestion({ name: 'Category 1', deletedAt: new Date() })
     const response = await request(app.getHttpServer()).get('/categories').send()
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       categories: expect.arrayContaining([
-        expect.objectContaining({ name: 'Category 1' }),
         expect.objectContaining({ name: 'Category 2' }),
+        expect.objectContaining({ name: 'Category 3' }),
       ]),
     })
   })

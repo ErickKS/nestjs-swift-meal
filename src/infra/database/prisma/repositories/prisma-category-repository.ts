@@ -1,3 +1,4 @@
+import { CategoryStatus, FetchCategoriesSearchParams } from '@/application/category/@types/fetch-categories-search-filters'
 import { CategoryRepository } from '@/application/category/repositories/category-repository'
 import { Category } from '@/domain/category/category'
 import { Injectable } from '@nestjs/common'
@@ -25,11 +26,13 @@ export class PrismaCategoryRepository implements CategoryRepository {
     return PrismaCategoryMapper.toDomain(category)
   }
 
-  async findAll(): Promise<Category[]> {
+  async findMany(params: FetchCategoriesSearchParams): Promise<Category[]> {
+    const status = params.status ?? CategoryStatus.ACTIVE
+    const sortOrder = params.sortOrder ?? 'asc'
+    const where = status === CategoryStatus.ALL ? {} : { deletedAt: status === CategoryStatus.ACTIVE ? null : { not: null } }
     const categories = await this.prisma.category.findMany({
-      orderBy: {
-        name: 'asc',
-      },
+      where,
+      orderBy: { name: sortOrder },
     })
     return categories.map(PrismaCategoryMapper.toDomain)
   }

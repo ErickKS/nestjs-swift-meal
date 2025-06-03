@@ -6,18 +6,21 @@ export interface CategoryProps {
   name: CategoryName
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
 }
 
 export interface CreateCategoryProps {
   name: string
   createdAt?: Date
   updatedAt?: Date
+  deletedAt?: Date
 }
 
 interface RestoreCategoryProps {
   name: string
   createdAt: Date
   updatedAt: Date
+  deletedAt?: Date
 }
 
 export class Category extends Entity<CategoryProps> {
@@ -37,8 +40,28 @@ export class Category extends Entity<CategoryProps> {
     return this.props.updatedAt
   }
 
+  get deletedAt(): Date | null {
+    return this.props.deletedAt
+  }
+
   touch(): void {
     this.props.updatedAt = new Date()
+  }
+
+  isActive(): boolean {
+    return this.deletedAt === null
+  }
+
+  deactivate() {
+    if (this.deletedAt) throw new Error('Category already deleted')
+    this.props.deletedAt = new Date()
+    this.touch()
+  }
+
+  reactivate() {
+    if (!this.deletedAt) throw new Error('Category not deleted')
+    this.props.deletedAt = null
+    this.touch()
   }
 
   static create(props: CreateCategoryProps, id?: string): Category {
@@ -47,6 +70,7 @@ export class Category extends Entity<CategoryProps> {
         name: CategoryName.create(props.name),
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? new Date(),
+        deletedAt: props.deletedAt ?? null,
       },
       UniqueEntityID.create(id)
     )
@@ -58,6 +82,7 @@ export class Category extends Entity<CategoryProps> {
         name: CategoryName.restore(props.name),
         createdAt: props.createdAt,
         updatedAt: props.updatedAt,
+        deletedAt: props.deletedAt ?? null,
       },
       UniqueEntityID.restore(id)
     )
