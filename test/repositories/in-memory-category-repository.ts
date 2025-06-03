@@ -12,6 +12,10 @@ export class InMemoryCategoryRepository implements CategoryRepository {
     return this.categories.find(category => category.id === id) || null
   }
 
+  async findAll(): Promise<Category[]> {
+    return this.categories.sort((a, b) => a.name.localeCompare(b.name))
+  }
+
   async save(category: Category): Promise<void> {
     this.categories.push(category)
   }
