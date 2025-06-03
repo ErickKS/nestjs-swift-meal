@@ -5,7 +5,7 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 
-describe('[POST] /category', () => {
+describe('[POST] /categories', () => {
   let app: INestApplication
   let prisma: PrismaService
 
@@ -23,7 +23,7 @@ describe('[POST] /category', () => {
     const input = {
       name: 'Category X',
     }
-    const response = await request(app.getHttpServer()).post('/category').send(input)
+    const response = await request(app.getHttpServer()).post('/categories').send(input)
     expect(response.statusCode).toBe(201)
     const categoryOnDatabase = await prisma.category.findFirst({
       where: { name: 'Category X' },

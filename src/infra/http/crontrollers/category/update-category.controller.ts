@@ -11,8 +11,8 @@ const updateCategoryBodySchema = z.object({
 })
 type UpdateCategoryBodySchema = z.infer<typeof updateCategoryBodySchema>
 
-@Controller('/category')
-@ApiTags('Category')
+@Controller('/categories')
+@ApiTags('Categories')
 export class UpdateCategoryController {
   constructor(private readonly updateCategory: UpdateCategoryUseCase) {}
 
