@@ -32,8 +32,11 @@ export class InMemoryCategoryRepository implements CategoryRepository {
 
   async update(category: Category): Promise<void> {
     const index = this.categories.findIndex(i => i.id === category.id)
-    if (index !== -1) {
-      this.categories[index] = category
-    }
+    if (index !== -1) this.categories[index] = category
+  }
+
+  async delete(category: Category): Promise<void> {
+    const index = this.categories.findIndex(i => i.id === category.id)
+    if (index !== -1) this.categories[index] = category
   }
 }

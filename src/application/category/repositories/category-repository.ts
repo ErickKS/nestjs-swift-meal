@@ -7,4 +7,5 @@ export abstract class CategoryRepository {
   abstract findMany(params: FetchCategoriesSearchParams): Promise<Category[]>
   abstract save(category: Category): Promise<void>
   abstract update(category: Category): Promise<void>
+  abstract delete(category: Category): Promise<void>
 }
