@@ -18,7 +18,11 @@ export class PrismaCategoryRepository implements CategoryRepository {
   }
 
   async findById(id: string): Promise<Category | null> {
-    throw new Error('Method not implemented.')
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+    })
+    if (!category) return null
+    return PrismaCategoryMapper.toDomain(category)
   }
 
   async save(category: Category): Promise<void> {
@@ -29,6 +33,10 @@ export class PrismaCategoryRepository implements CategoryRepository {
   }
 
   async update(category: Category): Promise<void> {
-    throw new Error('Method not implemented.')
+    const data = PrismaCategoryMapper.toPrisma(category)
+    await this.prisma.category.update({
+      where: { id: category.id },
+      data,
+    })
   }
 }
