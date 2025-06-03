@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common'
 
 import { CreateCategoryUseCase } from '@/application/category/use-cases/create-category'
+import { FetchCategoriesUseCase } from '@/application/category/use-cases/fetch-categories'
 import { UpdateCategoryUseCase } from '@/application/category/use-cases/update-category'
 import { DatabaseModule } from '../database/database.module'
 import { HealthCheckController } from './crontrollers/app/health-check.controller'
 import { CreateCategoryController } from './crontrollers/category/create-category.controller'
+import { FetchCategoriesController } from './crontrollers/category/fetch-categories.controller'
 import { UpdateCategoryController } from './crontrollers/category/update-category.controller'
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [HealthCheckController, CreateCategoryController, UpdateCategoryController],
-  providers: [CreateCategoryUseCase, UpdateCategoryUseCase],
+  controllers: [HealthCheckController, CreateCategoryController, UpdateCategoryController, FetchCategoriesController],
+  providers: [CreateCategoryUseCase, UpdateCategoryUseCase, FetchCategoriesUseCase],
 })
 export class HttpModule {}

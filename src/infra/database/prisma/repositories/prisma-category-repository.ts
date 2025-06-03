@@ -25,6 +25,15 @@ export class PrismaCategoryRepository implements CategoryRepository {
     return PrismaCategoryMapper.toDomain(category)
   }
 
+  async findAll(): Promise<Category[]> {
+    const categories = await this.prisma.category.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+    })
+    return categories.map(PrismaCategoryMapper.toDomain)
+  }
+
   async save(category: Category): Promise<void> {
     const data = PrismaCategoryMapper.toPrisma(category)
     await this.prisma.category.create({
