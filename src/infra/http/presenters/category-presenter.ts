@@ -7,6 +7,7 @@ export class CategoryPresenter {
       name: category.name,
       createdAt: category.createdAt,
       updatedAt: category.updatedAt,
+      deletedAt: category.deletedAt,
     }
   }
 }

@@ -19,6 +19,9 @@ const fetchCategoriesResponseSchema = z.object({
     z.object({
       id: z.string().uuid(),
       name: z.string(),
+      createdAt: z.string().datetime(),
+      updatedAt: z.string().datetime(),
+      deletedAt: z.string().datetime(),
     })
   ),
 })
