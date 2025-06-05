@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import { CategoryRepository } from '../repositories/category-repository'
 
-interface DeleteCategoryInput {
+interface ReactivateCategoryInput {
   categoryId: string
 }
 
 @Injectable()
-export class DeleteCategoryUseCase {
+export class ReactivateCategoryUseCase {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async execute({ categoryId }: DeleteCategoryInput): Promise<void> {
+  async execute({ categoryId }: ReactivateCategoryInput): Promise<void> {
     const category = await this.categoryRepository.findById(categoryId)
     if (!category) throw new Error('Category not found')
-    category.deactivate()
-    await this.categoryRepository.delete(category)
+    category.reactivate()
+    await this.categoryRepository.update(category)
   }
 }
