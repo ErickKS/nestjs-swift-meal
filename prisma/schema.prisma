@@ -14,5 +14,24 @@ model Category {
   updatedAt DateTime  @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
+  Item Item[]
+
   @@map("categories")
+}
+
+model Item {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  name        String
+  description String
+  price       Int
+  active      Boolean   @default(true)
+  categoryId  String    @map("category_id")
+  createdAt   DateTime  @map("created_at")
+  updatedAt   DateTime  @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@map("items")
 }
