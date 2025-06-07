@@ -24,9 +24,9 @@ describe('[GET] /items', () => {
 
   test('should fetch all active items ordered by name asc by default', async () => {
     const newCategory = await categoryFactory.makePrismaCategory({})
-    await itemFactory.makePrismaItem({ code: '3', categoryId: newCategory.id })
-    await itemFactory.makePrismaItem({ code: '2', categoryId: newCategory.id })
-    await itemFactory.makePrismaItem({ code: '1', categoryId: newCategory.id, active: false })
+    await itemFactory.makePrismaItem({ code: '3', price: 25.99, categoryId: newCategory.id })
+    await itemFactory.makePrismaItem({ code: '2', price: 20, categoryId: newCategory.id })
+    await itemFactory.makePrismaItem({ code: '1', price: 20, categoryId: newCategory.id, active: false })
     const response = await request(app.getHttpServer()).get('/items').send()
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
@@ -34,7 +34,7 @@ describe('[GET] /items', () => {
       page: 1,
       perPage: 20,
       totalPages: 1,
-      data: [expect.objectContaining({ code: '2' }), expect.objectContaining({ code: '3' })],
+      data: [expect.objectContaining({ code: '2', price: 20 }), expect.objectContaining({ code: '3', price: 25.99 })],
     })
   })
 })

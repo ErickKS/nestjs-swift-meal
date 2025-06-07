@@ -8,7 +8,7 @@ export class PrismaItemMapper {
         code: raw.code,
         name: raw.name,
         description: raw.description,
-        price: raw.price,
+        price: raw.price / 100,
         active: raw.active,
         categoryId: raw.categoryId,
         createdAt: raw.createdAt,
