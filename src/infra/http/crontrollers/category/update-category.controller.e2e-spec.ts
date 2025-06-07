@@ -23,7 +23,7 @@ describe('[PATCH] /categories', () => {
   })
 
   test('should update category name', async () => {
-    const newCategory = await categoryFactory.makePrismaQuestion({ name: 'Category X' })
+    const newCategory = await categoryFactory.makePrismaCategory({ name: 'Category X' })
     const input = {
       categoryId: newCategory.id,
       name: 'Category Y',

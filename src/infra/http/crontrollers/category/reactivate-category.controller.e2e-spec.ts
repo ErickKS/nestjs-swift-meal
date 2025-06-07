@@ -23,7 +23,7 @@ describe('[POST] /categories/{categoryId}/reactivate', () => {
   })
 
   test('should reactive category', async () => {
-    const newCategory = await categoryFactory.makePrismaQuestion({ deletedAt: new Date() })
+    const newCategory = await categoryFactory.makePrismaCategory({ deletedAt: new Date() })
     const response = await request(app.getHttpServer()).post(`/categories/${newCategory.id}/reactivate`).send()
     expect(response.statusCode).toBe(204)
     const categoryOnDatabase = await prisma.category.findFirst({

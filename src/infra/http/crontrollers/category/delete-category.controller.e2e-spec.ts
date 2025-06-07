@@ -23,7 +23,7 @@ describe('[DELETE] /categories', () => {
   })
 
   test('should delete category', async () => {
-    const newCategory = await categoryFactory.makePrismaQuestion()
+    const newCategory = await categoryFactory.makePrismaCategory()
     const input = {
       categoryId: newCategory.id,
     }
