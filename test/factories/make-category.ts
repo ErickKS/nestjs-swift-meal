@@ -19,7 +19,7 @@ export function makeCategory(override: Partial<CreateCategoryProps> = {}, id?: s
 export class CategoryFactory {
   constructor(private prisma: PrismaService) {}
 
-  async makePrismaQuestion(data: Partial<CreateCategoryProps> = {}): Promise<Category> {
+  async makePrismaCategory(data: Partial<CreateCategoryProps> = {}): Promise<Category> {
     const question = makeCategory(data)
     await this.prisma.category.create({
       data: PrismaCategoryMapper.toPrisma(question),
