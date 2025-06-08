@@ -23,6 +23,30 @@ describe('Item Entity', () => {
     expect(item.isAvailable()).toBe(true)
   })
 
+  it('should restore an item', () => {
+    const props = makeValidProps()
+    const item = Item.restore(
+      {
+        ...props,
+        price: 1000,
+        active: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      'item-1'
+    )
+    expect(item.code).toBe(props.code)
+    expect(item.name).toBe(props.name)
+    expect(item.description).toBe(props.description)
+    expect(item.price).toBe(props.price)
+    expect(item.priceInCents).toBe(1000)
+    expect(item.categoryId).toBe(props.categoryId)
+    expect(item.active).toBe(true)
+    expect(item.createdAt).toBeDefined()
+    expect(item.update).toBeDefined()
+    expect(item.isDeleted()).toBeFalsy()
+  })
+
   it('should deactivate an active item', async () => {
     const item = Item.create(makeValidProps())
     item.deactivate()
