@@ -38,7 +38,6 @@ export class PrismaItemRepository implements ItemRepository {
   }
 
   async findById(id: string): Promise<Item | null> {
-    console.log(id)
     const item = await this.prisma.item.findUnique({
       where: { id },
     })

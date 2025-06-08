@@ -40,6 +40,7 @@ describe('[GET] /items/:itemId', () => {
         name: 'Item 1',
         description: 'Description 1',
         price: 2090,
+        active: true,
         categoryId: category.id,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
