@@ -3,7 +3,7 @@ import { Body, Controller, HttpCode, Post, UnprocessableEntityException, UsePipe
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
+import { ZodRequestValidationPipe } from '../../pipes/zod-request-validation-pipe'
 
 const createItemBodySchema = z.object({
   code: z.string().min(1),
@@ -21,7 +21,7 @@ export class CreateItemController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createItemBodySchema))
+  @UsePipes(new ZodRequestValidationPipe({ body: createItemBodySchema }))
   @ApiBody({ schema: zodToOpenAPI(createItemBodySchema) })
   @ApiResponse({ status: 201, description: 'Created' })
   @ApiResponse({ status: 400, description: 'Bad Request' })

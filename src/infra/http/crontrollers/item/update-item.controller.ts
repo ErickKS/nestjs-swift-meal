@@ -4,7 +4,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
 import { ApiParamFromZod } from '../../decorators/api-param-from-zod.decorator'
-import { ZodRequestValidationPipe } from '../../pipes/zod-request--validation-pipe'
+import { ZodRequestValidationPipe } from '../../pipes/zod-request-validation-pipe'
 
 const updateItemParamsSchema = z.object({
   itemId: z.string().uuid(),

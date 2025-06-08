@@ -5,7 +5,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
 import { ApiQueryFromZod } from '../../decorators/api-query-from-zod.decorator'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
+import { ZodRequestValidationPipe } from '../../pipes/zod-request-validation-pipe'
 import { ItemPresenter } from '../../presenters/item-presenter'
 
 const fetchItemsQuerySchema = z.object({
@@ -49,7 +49,7 @@ export class FetchItemsController {
 
   @Get()
   @HttpCode(200)
-  @UsePipes(new ZodValidationPipe(fetchItemsQuerySchema))
+  @UsePipes(new ZodRequestValidationPipe({ query: fetchItemsQuerySchema }))
   @ApiQueryFromZod(fetchItemsQuerySchema)
   @ApiResponse({ status: 200, description: 'OK', schema: zodToOpenAPI(fetchItemsResponseSchema) })
   @ApiOperation({
