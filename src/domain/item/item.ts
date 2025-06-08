@@ -42,6 +42,8 @@ interface RestoreItemProps {
   deletedAt?: Date
 }
 
+type UpdateItemProps = Partial<Pick<CreateItemProps, 'name' | 'description' | 'price' | 'categoryId'>>
+
 export class Item extends Entity<ItemProps> {
   get code(): string {
     return this.props.code.value
@@ -153,5 +155,14 @@ export class Item extends Entity<ItemProps> {
       },
       UniqueEntityID.restore(id)
     )
+  }
+
+  public update(props: UpdateItemProps): void {
+    if (this.isDeleted()) throw new Error('Cannot update a deleted item')
+    if (props.name) this.props.name = ItemName.create(props.name)
+    if (props.description) this.props.description = ItemDescription.create(props.description)
+    if (props.price !== undefined) this.props.price = Price.createFromDecimal(props.price)
+    if (props.categoryId) this.props.categoryId = ItemCategoryId.create(props.categoryId)
+    this.touch()
   }
 }

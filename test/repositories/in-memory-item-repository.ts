@@ -31,6 +31,10 @@ export class InMemoryItemRepository implements ItemRepository {
     return this.items.some(item => item.code === code)
   }
 
+  async findById(id: string): Promise<Item | null> {
+    return this.items.find(item => item.id === id) || null
+  }
+
   async findMany(params: FetchItemsSearchParams): Promise<Item[]> {
     const filtered = this.applyFilters(params)
     const { page = 1, perPage = 10, sortOrder = 'asc' } = params
@@ -42,6 +46,11 @@ export class InMemoryItemRepository implements ItemRepository {
 
   async save(item: Item): Promise<void> {
     this.items.push(item)
+  }
+
+  async update(item: Item): Promise<void> {
+    const index = this.items.findIndex(i => i.id === item.id)
+    if (index !== -1) this.items[index] = item
   }
 
   async count(params: FetchItemsSearchParams): Promise<number> {

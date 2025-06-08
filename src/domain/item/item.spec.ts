@@ -12,7 +12,6 @@ describe('Item Entity', () => {
   it('should create an item with valid properties', () => {
     const props = makeValidProps()
     const item = Item.create(props)
-
     expect(item.code).toBe(props.code)
     expect(item.name).toBe(props.name)
     expect(item.description).toBe(props.description)
@@ -85,5 +84,26 @@ describe('Item Entity', () => {
     const item = Item.create(makeValidProps())
     item.softDelete()
     expect(() => item.deactivate()).toThrowError('Item is deleted')
+  })
+
+  it('should update name, description, price and categoryId', () => {
+    const item = Item.create(makeValidProps())
+    item.update({
+      name: 'Updated Name',
+      description: 'Updated Description',
+      price: 25.5,
+      categoryId: 'new-category-id',
+    })
+    expect(item.name).toBe('Updated Name')
+    expect(item.description).toBe('Updated Description')
+    expect(item.price).toBe(25.5)
+    expect(item.priceInCents).toBe(2550)
+    expect(item.categoryId).toBe('new-category-id')
+  })
+
+  it('should not allow update if item is deleted', () => {
+    const item = Item.create(makeValidProps())
+    item.softDelete()
+    expect(() => item.update({ name: 'Updated Name' })).toThrowError('Cannot update a deleted item')
   })
 })
