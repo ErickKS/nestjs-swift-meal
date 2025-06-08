@@ -75,6 +75,17 @@ export class PrismaItemRepository implements ItemRepository {
     })
   }
 
+  async delete(item: Item): Promise<void> {
+    const data = PrismaItemMapper.toPrisma(item)
+    await this.prisma.item.update({
+      where: { id: item.id },
+      data: {
+        deletedAt: data.deletedAt,
+        updatedAt: data.updatedAt,
+      },
+    })
+  }
+
   async count(params: FetchItemsSearchParams): Promise<number> {
     const where: Prisma.ItemWhereInput = this.buildSearchWhere(params)
     return this.prisma.item.count({ where })
