@@ -5,34 +5,34 @@ import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { CategoryFactory } from 'test/factories/make-category'
+import { ItemFactory } from 'test/factories/make-item'
 
-describe('[PATCH] /categories', () => {
+describe('[DELETE] /items/:itemId', () => {
   let app: INestApplication
   let prisma: PrismaService
   let categoryFactory: CategoryFactory
+  let itemFactory: ItemFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [CategoryFactory],
+      providers: [ItemFactory, CategoryFactory],
     }).compile()
     app = moduleRef.createNestApplication()
     prisma = moduleRef.get(PrismaService)
     categoryFactory = moduleRef.get(CategoryFactory)
+    itemFactory = moduleRef.get(ItemFactory)
     await app.init()
   })
 
-  test('should update category name', async () => {
-    const newCategory = await categoryFactory.makePrismaCategory({ name: 'Category X' })
-    const input = {
-      categoryId: newCategory.id,
-      name: 'Category Y',
-    }
-    const response = await request(app.getHttpServer()).patch('/categories').send(input)
+  test('should delete item', async () => {
+    const category = await categoryFactory.makePrismaCategory()
+    const newItem = await itemFactory.makePrismaItem({ categoryId: category.id })
+    const response = await request(app.getHttpServer()).delete(`/items/${newItem.id}`).send()
     expect(response.statusCode).toBe(204)
-    const categoryOnDatabase = await prisma.category.findFirst({
-      where: { name: 'Category Y' },
+    const itemOnDatabase = await prisma.item.findFirst({
+      where: { id: newItem.id },
     })
-    expect(categoryOnDatabase).toBeTruthy()
+    expect(itemOnDatabase?.deletedAt).toBeDefined()
   })
 })

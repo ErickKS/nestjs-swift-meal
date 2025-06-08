@@ -20,9 +20,9 @@ describe('[GET] /categories', () => {
   })
 
   test('should fetch all active categories ordered by name asc by default', async () => {
-    await categoryFactory.makePrismaQuestion({ name: 'Category 3' })
-    await categoryFactory.makePrismaQuestion({ name: 'Category 2' })
-    await categoryFactory.makePrismaQuestion({ name: 'Category 1', deletedAt: new Date() })
+    await categoryFactory.makePrismaCategory({ name: 'Category 3' })
+    await categoryFactory.makePrismaCategory({ name: 'Category 2' })
+    await categoryFactory.makePrismaCategory({ name: 'Category 1', deletedAt: new Date() })
     const response = await request(app.getHttpServer()).get('/categories').send()
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
