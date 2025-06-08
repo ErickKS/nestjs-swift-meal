@@ -37,6 +37,15 @@ export class PrismaItemRepository implements ItemRepository {
     return !!item
   }
 
+  async findById(id: string): Promise<Item | null> {
+    console.log(id)
+    const item = await this.prisma.item.findUnique({
+      where: { id },
+    })
+    if (!item) return null
+    return PrismaItemMapper.toDomain(item)
+  }
+
   async findMany(params: FetchItemsSearchParams): Promise<Item[]> {
     const { page = 1, perPage = 10, sortOrder = 'asc' } = params
     const skip = (page - 1) * perPage
@@ -54,6 +63,14 @@ export class PrismaItemRepository implements ItemRepository {
   async save(item: Item): Promise<void> {
     const data = PrismaItemMapper.toPrisma(item)
     await this.prisma.item.create({
+      data,
+    })
+  }
+
+  async update(item: Item): Promise<void> {
+    const data = PrismaItemMapper.toPrisma(item)
+    await this.prisma.item.update({
+      where: { id: item.id },
       data,
     })
   }

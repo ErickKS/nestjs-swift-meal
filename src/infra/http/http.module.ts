@@ -7,6 +7,7 @@ import { ReactivateCategoryUseCase } from '@/application/category/use-cases/reac
 import { UpdateCategoryUseCase } from '@/application/category/use-cases/update-category'
 import { CreateItemUseCase } from '@/application/item/use-cases/create-item'
 import { FetchItemsUseCase } from '@/application/item/use-cases/fetch-items'
+import { UpdateItemUseCase } from '@/application/item/use-cases/update-item'
 import { DatabaseModule } from '../database/database.module'
 import { HealthCheckController } from './crontrollers/app/health-check.controller'
 import { CreateCategoryController } from './crontrollers/category/create-category.controller'
@@ -16,6 +17,7 @@ import { ReactivateCategoryController } from './crontrollers/category/reactivate
 import { UpdateCategoryController } from './crontrollers/category/update-category.controller'
 import { CreateItemController } from './crontrollers/item/create-item.controller'
 import { FetchItemsController } from './crontrollers/item/fetch-items.controller'
+import { UpdateItemController } from './crontrollers/item/update-item.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -31,6 +33,7 @@ import { FetchItemsController } from './crontrollers/item/fetch-items.controller
     // ===== Item
     CreateItemController,
     FetchItemsController,
+    UpdateItemController,
   ],
   providers: [
     // ===== Category
@@ -42,6 +45,7 @@ import { FetchItemsController } from './crontrollers/item/fetch-items.controller
     // ===== Item
     CreateItemUseCase,
     FetchItemsUseCase,
+    UpdateItemUseCase,
   ],
 })
 export class HttpModule {}
