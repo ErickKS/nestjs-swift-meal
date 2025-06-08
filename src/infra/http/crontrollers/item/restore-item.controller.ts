@@ -34,8 +34,8 @@ export class RestoreItemController {
   private static swagger() {
     return applyDecorators(
       ApiOperation({
-        summary: 'Restore item',
-        description: 'This endpoint allows you to restore an item.',
+        summary: 'Restore a deleted item',
+        description: 'This endpoint allows you to restore a deleted item.',
       }),
       ApiParamFromZod(restoreItemParamsSchema),
       ApiResponse({ status: 204, description: 'No Content' }),
