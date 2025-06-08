@@ -53,6 +53,11 @@ export class InMemoryItemRepository implements ItemRepository {
     if (index !== -1) this.items[index] = item
   }
 
+  async delete(item: Item): Promise<void> {
+    const index = this.items.findIndex(i => i.id === item.id)
+    if (index !== -1) this.items[index] = item
+  }
+
   async count(params: FetchItemsSearchParams): Promise<number> {
     return this.applyFilters(params).length
   }
