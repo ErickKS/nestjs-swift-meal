@@ -1,5 +1,5 @@
 import { UpdateItemUseCase } from '@/application/item/use-cases/update-item'
-import { Body, Controller, HttpCode, Param, Patch, UnprocessableEntityException, UsePipes } from '@nestjs/common'
+import { Body, Controller, HttpCode, Param, Patch, UnprocessableEntityException, UsePipes, applyDecorators } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
@@ -27,26 +27,32 @@ export class UpdateItemController {
 
   @Patch()
   @HttpCode(204)
+  @UpdateItemController.swagger()
   @UsePipes(
     new ZodRequestValidationPipe({
       body: updateItemBodySchema,
       param: updateItemParamsSchema,
     })
   )
-  @ApiParamFromZod(updateItemParamsSchema)
-  @ApiBody({ schema: zodToOpenAPI(updateItemBodySchema) })
-  @ApiResponse({ status: 204, description: 'No Content' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 422, description: 'Unprocessable Entity' })
-  @ApiOperation({
-    summary: 'Update item',
-    description: 'This endpoint allows you to update an item.',
-  })
   async handle(@Param() param: UpdateItemParamsSchema, @Body() body: UpdateItemBodySchema) {
     try {
       await this.updateItem.execute({ itemId: param.itemId, ...body })
     } catch (error) {
       throw new UnprocessableEntityException(error.message)
     }
+  }
+
+  private static swagger() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Update item',
+        description: 'This endpoint allows you to update an item.',
+      }),
+      ApiParamFromZod(updateItemParamsSchema),
+      ApiBody({ schema: zodToOpenAPI(updateItemBodySchema) }),
+      ApiResponse({ status: 204, description: 'No Content' }),
+      ApiResponse({ status: 400, description: 'Bad Request' }),
+      ApiResponse({ status: 422, description: 'Unprocessable Entity' })
+    )
   }
 }

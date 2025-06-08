@@ -1,6 +1,6 @@
 import { ItemStatus } from '@/application/item/@types/fetch-items-search-filters'
 import { FetchItemsUseCase } from '@/application/item/use-cases/fetch-items'
-import { Controller, Get, HttpCode, Query, UsePipes } from '@nestjs/common'
+import { Controller, Get, HttpCode, Query, UsePipes, applyDecorators } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
@@ -49,18 +49,24 @@ export class FetchItemsController {
 
   @Get()
   @HttpCode(200)
+  @FetchItemsController.swagger()
   @UsePipes(new ZodRequestValidationPipe({ query: fetchItemsQuerySchema }))
-  @ApiQueryFromZod(fetchItemsQuerySchema)
-  @ApiResponse({ status: 200, description: 'OK', schema: zodToOpenAPI(fetchItemsResponseSchema) })
-  @ApiOperation({
-    summary: 'Fetch items',
-    description: 'This endpoint allows you to fetch items by filters. The items are returned in an array.',
-  })
   async handle(@Query() query: FetchItemsQuerySchema) {
     const result = await this.fetchItems.execute(query)
     return {
       ...result,
       data: result.data.map(ItemPresenter.toHTTP),
     }
+  }
+
+  private static swagger() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Fetch items',
+        description: 'This endpoint allows you to fetch items by filters. The items are returned in an array.',
+      }),
+      ApiQueryFromZod(fetchItemsQuerySchema),
+      ApiResponse({ status: 200, description: 'OK', schema: zodToOpenAPI(fetchItemsResponseSchema) })
+    )
   }
 }
