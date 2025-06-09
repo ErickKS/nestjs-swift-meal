@@ -1,9 +1,9 @@
 import { CreateCustomerUseCase } from '@/application/customer/use-cases/create-customer'
-import { Body, Controller, HttpCode, Post, UnprocessableEntityException, UsePipes } from '@nestjs/common'
+import { Body, Controller, HttpCode, Post, UnprocessableEntityException, UsePipes, applyDecorators } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../../pipes/zod-validation-pipe'
+import { ZodRequestValidationPipe } from '../../pipes/zod-request-validation-pipe'
 
 const createCustomerBodySchema = z.object({
   name: z.string().min(1),
@@ -19,20 +19,30 @@ export class CreateCustomerController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipe(createCustomerBodySchema))
-  @ApiBody({ schema: zodToOpenAPI(createCustomerBodySchema) })
-  @ApiResponse({ status: 201, description: 'Created' })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 422, description: 'Unprocessable Entity' })
-  @ApiOperation({
-    summary: 'Create new customer',
-    description: 'This endpoint allows you to create a customer.',
-  })
+  @CreateCustomerController.swagger()
+  @UsePipes(
+    new ZodRequestValidationPipe({
+      body: createCustomerBodySchema,
+    })
+  )
   async handle(@Body() body: CreateCustomerBodySchema) {
     try {
       await this.createCustomer.execute(body)
     } catch (error) {
       throw new UnprocessableEntityException(error.message)
     }
+  }
+
+  private static swagger() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Create new customer',
+        description: 'This endpoint allows you to create a customer.',
+      }),
+      ApiBody({ schema: zodToOpenAPI(createCustomerBodySchema) }),
+      ApiResponse({ status: 201, description: 'Created' }),
+      ApiResponse({ status: 400, description: 'Bad Request' }),
+      ApiResponse({ status: 422, description: 'Unprocessable Entity' })
+    )
   }
 }
