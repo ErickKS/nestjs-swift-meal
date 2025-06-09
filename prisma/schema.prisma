@@ -35,3 +35,13 @@ model Item {
 
   @@map("items")
 }
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  document  String   @unique
+  email     String   @unique
+  createdAt DateTime @map("created_at")
+
+  @@map("customers")
+}

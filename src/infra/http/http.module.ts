@@ -5,6 +5,7 @@ import { DeleteCategoryUseCase } from '@/application/category/use-cases/delete-c
 import { FetchCategoriesUseCase } from '@/application/category/use-cases/fetch-categories'
 import { ReactivateCategoryUseCase } from '@/application/category/use-cases/reactivate-category'
 import { UpdateCategoryUseCase } from '@/application/category/use-cases/update-category'
+import { CreateCustomerUseCase } from '@/application/customer/use-cases/create-customer'
 import { CreateItemUseCase } from '@/application/item/use-cases/create-item'
 import { DeleteItemUseCase } from '@/application/item/use-cases/delete-item'
 import { FetchItemsUseCase } from '@/application/item/use-cases/fetch-items'
@@ -18,6 +19,7 @@ import { DeleteCategoryController } from './controllers/category/delete-category
 import { FetchCategoriesController } from './controllers/category/fetch-categories.controller'
 import { ReactivateCategoryController } from './controllers/category/reactivate-category.controller'
 import { UpdateCategoryController } from './controllers/category/update-category.controller'
+import { CreateCustomerController } from './controllers/customer/create-customer.controller'
 import { CreateItemController } from './controllers/item/create-item.controller'
 import { DeleteItemController } from './controllers/item/delete-item.controller'
 import { FetchItemsController } from './controllers/item/fetch-items.controller'
@@ -43,6 +45,8 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
     UpdateItemController,
     DeleteItemController,
     RestoreItemController,
+    // ===== Customer
+    CreateCustomerController,
   ],
   providers: [
     // ===== Category
@@ -58,6 +62,8 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
     UpdateItemUseCase,
     DeleteItemUseCase,
     RestoreItemUseCase,
+    // ===== Customer
+    CreateCustomerUseCase,
   ],
 })
 export class HttpModule {}
