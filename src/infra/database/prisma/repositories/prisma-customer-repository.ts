@@ -34,6 +34,14 @@ export class PrismaCustomerRepository implements CustomerRepository {
     return PrismaCustomerMapper.toDomain(customer)
   }
 
+  async findByDocument(document: string): Promise<Customer | null> {
+    const customer = await this.prisma.customer.findUnique({
+      where: { document },
+    })
+    if (!customer) return null
+    return PrismaCustomerMapper.toDomain(customer)
+  }
+
   async save(customer: Customer): Promise<void> {
     const data = PrismaCustomerMapper.toPrisma(customer)
     await this.prisma.customer.create({
