@@ -8,7 +8,7 @@ import { ZodRequestValidationPipe } from '../../pipes/zod-request-validation-pip
 import { CustomerPresenter } from '../../presenters/customer-presenter'
 
 const getCustomerByDocumentParamsSchema = z.object({
-  document: z.string().min(11).max(14),
+  document: z.string().min(11).max(11),
 })
 type GetCustomerByDocumentParamsSchema = z.infer<typeof getCustomerByDocumentParamsSchema>
 
