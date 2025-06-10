@@ -6,7 +6,6 @@ export abstract class CustomerRepository {
   abstract existsByEmail(email: string): Promise<boolean>
   abstract findMany(params: FetchCustomersSearchParams): Promise<Customer[]>
   abstract count(params: FetchCustomersSearchParams): Promise<number>
-  abstract findById(id: string): Promise<Customer | null>
   abstract findByDocument(id: string): Promise<Customer | null>
   abstract save(customer: Customer): Promise<void>
 }
