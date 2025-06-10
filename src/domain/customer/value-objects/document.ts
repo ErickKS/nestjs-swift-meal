@@ -11,16 +11,18 @@ export class Document extends StringValue {
   }
 
   static create(aString: string): Document {
-    this.validate(aString)
-    return new Document(aString)
+    const cleanString = this.clean(aString)
+    this.validate(cleanString)
+    return new Document(cleanString)
   }
 
   static restore(aString: string): Document {
-    return new Document(aString)
+    const cleanString = this.clean(aString)
+    return new Document(cleanString)
   }
 
   protected static override extraValidate(value: string): void {
-    const digitsOnly = value.replace(/[^\d]/g, '')
+    const digitsOnly = this.clean(value)
     if (digitsOnly.length !== this.DOCUMENT_LENGTH || this.DOCUMENT_INVALID_PATTERN.test(digitsOnly)) throw new Error('Invalid CPF format')
     const calcCheckDigit = (base: string, factor: number): number => {
       const total = base
@@ -35,5 +37,9 @@ export class Document extends StringValue {
     const secondDigit = calcCheckDigit(base + firstDigit, 11)
     const expectedCpf = base + firstDigit.toString() + secondDigit.toString()
     if (digitsOnly !== expectedCpf) throw new Error('Invalid CPF check digits')
+  }
+
+  private static clean(aString: string): string {
+    return aString.replace(/[^\d]/g, '')
   }
 }

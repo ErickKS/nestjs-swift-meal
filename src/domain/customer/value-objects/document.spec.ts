@@ -2,15 +2,13 @@ import { Document } from './document'
 
 describe('Document Value Object', () => {
   it('should create a valid document', () => {
-    const validCPF = '529.982.247-25'
-    const document = Document.create(validCPF)
-    expect(document.value).toBe(validCPF)
+    const document = Document.create('529.982.247-25')
+    expect(document.value).toBe('52998224725')
   })
 
   it('should create a valid document with only digits', () => {
-    const validCPF = '52998224725'
-    const document = Document.create(validCPF)
-    expect(document.value).toBe(validCPF)
+    const document = Document.create('52998224725')
+    expect(document.value).toBe('52998224725')
   })
 
   it('should throw on empty value', () => {
@@ -25,8 +23,14 @@ describe('Document Value Object', () => {
     expect(() => Document.create('529.982.247-24')).toThrow('Invalid CPF check digits')
   })
 
-  it('should restore without validation', () => {
-    const restored = Document.restore('52998224725')
+  it('should restore and clean the value', () => {
+    const restored = Document.restore('529.982.247-25')
     expect(restored.value).toBe('52998224725')
+  })
+
+  it('should validate CPF that triggers rest === 10 (returns 0)', () => {
+    const trickyCPF = '16899535009'
+    const document = Document.create(trickyCPF)
+    expect(document.value).toBe(trickyCPF)
   })
 })
