@@ -36,6 +36,10 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
   controllers: [
     // ===== APP
     HealthCheckController,
+    // ===== Customer
+    CreateCustomerController,
+    GetCustomerByDocumentController,
+    FetchCustomersController,
     // ===== Category
     CreateCategoryController,
     FetchCategoriesController,
@@ -49,12 +53,12 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
     UpdateItemController,
     DeleteItemController,
     RestoreItemController,
-    // ===== Customer
-    CreateCustomerController,
-    GetCustomerByDocumentController,
-    FetchCustomersController,
   ],
   providers: [
+    // ===== Customer
+    CreateCustomerUseCase,
+    GetCustomerByDocumentUseCase,
+    FetchCustomersUseCase,
     // ===== Category
     CreateCategoryUseCase,
     FetchCategoriesUseCase,
@@ -68,10 +72,6 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
     UpdateItemUseCase,
     DeleteItemUseCase,
     RestoreItemUseCase,
-    // ===== Customer
-    CreateCustomerUseCase,
-    GetCustomerByDocumentUseCase,
-    FetchCustomersUseCase,
   ],
 })
 export class HttpModule {}
