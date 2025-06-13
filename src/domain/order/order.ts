@@ -2,14 +2,14 @@ import { Entity } from '@/shared/kernel/entities/entity'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
 import { OrderStatusFactory } from './factories/order-satus-factory'
-import { Code } from './value-objects/code'
+import { OrderCode } from './value-objects/order-code'
 import { OrderItem, type OrderItemCreateProps, type OrderItemRestoreProps } from './value-objects/order-item'
 import { OrderStatus } from './value-objects/order-status/order-status'
 import { OrderStatusPaymentPending } from './value-objects/order-status/order-status-payment-pending'
 
 export interface OrderProps {
   customerId: UniqueEntityID | null
-  code: Code
+  code: OrderCode
   status: OrderStatus
   total: Amount
   items: OrderItem[]
@@ -79,7 +79,7 @@ export class Order extends Entity<OrderProps> {
     return new Order(
       {
         customerId: props.customerId ? UniqueEntityID.restore(props.customerId) : null,
-        code: Code.create(props.code),
+        code: OrderCode.create(props.code),
         status: props.status ? OrderStatusFactory.from(props.status) : new OrderStatusPaymentPending(),
         items,
         total,
@@ -95,7 +95,7 @@ export class Order extends Entity<OrderProps> {
     return new Order(
       {
         customerId: props.customerId ? UniqueEntityID.restore(props.customerId) : null,
-        code: Code.restore(props.code),
+        code: OrderCode.restore(props.code),
         status: OrderStatusFactory.from(props.status),
         items,
         total: Amount.createFromCents(props.total),

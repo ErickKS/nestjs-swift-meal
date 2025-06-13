@@ -1,22 +1,22 @@
 import { StringRules, StringValue } from '@/shared/kernel/value-objects/string-value'
 
-export class Code extends StringValue {
+export class OrderCode extends StringValue {
   protected static override rules: StringRules = {
-    fieldName: 'Code',
+    fieldName: 'OrderCode',
   }
 
-  static create(aString?: string): Code {
+  static create(aString?: string): OrderCode {
     let code = aString
     if (code) {
       this.validate(code)
     } else {
       code = this.generate()
     }
-    return new Code(code)
+    return new OrderCode(code)
   }
 
-  static restore(aString: string): Code {
-    return new Code(aString)
+  static restore(aString: string): OrderCode {
+    return new OrderCode(aString)
   }
 
   private static generate(): string {
