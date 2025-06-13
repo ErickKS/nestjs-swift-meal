@@ -36,4 +36,39 @@ describe('Amount Value Object', () => {
     expect(price.cents).toBe(0)
     expect(price.decimal).toBe(0)
   })
+
+  it('should multiply amount correctly', () => {
+    const price = Amount.createFromDecimal(19.9)
+    const result = price.multiply(2)
+    expect(result.cents).toBe(3980)
+    expect(result.decimal).toBeCloseTo(39.8)
+  })
+
+  it('should add two amounts correctly', () => {
+    const a = Amount.createFromDecimal(10.5)
+    const b = Amount.createFromDecimal(4.25)
+    const result = a.add(b)
+    expect(result.cents).toBe(1475)
+    expect(result.decimal).toBeCloseTo(14.75)
+  })
+
+  it('should subtract two amounts correctly', () => {
+    const a = Amount.createFromDecimal(20)
+    const b = Amount.createFromDecimal(5.5)
+    const result = a.subtract(b)
+    expect(result.cents).toBe(1450)
+    expect(result.decimal).toBeCloseTo(14.5)
+  })
+
+  it('should compare two equal amounts correctly', () => {
+    const a = Amount.createFromDecimal(12.34)
+    const b = Amount.createFromCents(1234)
+    expect(a.equals(b)).toBe(true)
+  })
+
+  it('should compare two different amounts correctly', () => {
+    const a = Amount.createFromDecimal(10)
+    const b = Amount.createFromDecimal(15)
+    expect(a.equals(b)).toBe(false)
+  })
 })

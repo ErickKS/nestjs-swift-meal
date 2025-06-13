@@ -1,0 +1,170 @@
+import { Entity } from '@/shared/kernel/entities/entity'
+import { Amount } from '@/shared/kernel/value-objects/amount'
+import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
+import { OrderStatusFactory } from './order-status/order-satus-factory'
+import { OrderStatus } from './order-status/order-status'
+import { OrderStatusPaymentPending } from './order-status/order-status-payment-pending'
+import { Code } from './value-objects/code'
+import { OrderItem } from './value-objects/order-item'
+
+export interface OrderProps {
+  customerId: UniqueEntityID | null
+  code: Code
+  status: OrderStatus
+  total: Amount
+  items: OrderItem[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface CreateOrderProps {
+  customerId?: string
+  code?: string
+  status?: string
+  items: {
+    itemId: string
+    name: string
+    unitPrice: number
+    quantity: number
+  }[]
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+interface RestoreOrderProps {
+  customerId?: string
+  code: string
+  status: string
+  items: {
+    itemId: string
+    name: string
+    unitPrice: number
+    quantity: number
+  }[]
+  total: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export class Order extends Entity<OrderProps> {
+  get customerId(): string | null {
+    return this.props.customerId?.value ?? null
+  }
+
+  get code(): string {
+    return this.props.code.value
+  }
+
+  get status(): string {
+    return this.props.status.value()
+  }
+
+  get total(): number {
+    return this.props.total.decimal
+  }
+
+  get totalInCents(): number {
+    return this.props.total.cents
+  }
+
+  get items(): OrderItem[] {
+    return this.props.items
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt
+  }
+
+  get updatedAt(): Date {
+    return this.props.updatedAt
+  }
+
+  touch(): void {
+    this.props.updatedAt = new Date()
+  }
+
+  static create(props: CreateOrderProps, id?: string): Order {
+    const items = props.items.map(OrderItem.create)
+    const total = Order.calculateTotal(items)
+    return new Order(
+      {
+        customerId: props.customerId ? UniqueEntityID.restore(props.customerId) : null,
+        code: Code.create(props.code),
+        status: props.status ? OrderStatusFactory.from(props.status) : new OrderStatusPaymentPending(),
+        items,
+        total,
+        createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
+      },
+      UniqueEntityID.create(id)
+    )
+  }
+
+  static restore(props: RestoreOrderProps, id: string): Order {
+    const items = props.items.map(OrderItem.restore)
+    return new Order(
+      {
+        customerId: props.customerId ? UniqueEntityID.restore(props.customerId) : null,
+        code: Code.restore(props.code),
+        status: OrderStatusFactory.from(props.status),
+        items,
+        total: Amount.createFromCents(props.total),
+        createdAt: props.createdAt,
+        updatedAt: props.updatedAt,
+      },
+      UniqueEntityID.restore(id)
+    )
+  }
+
+  pay() {
+    this.props.status.pay(this)
+  }
+
+  prepare() {
+    this.props.status.prepare(this)
+  }
+
+  ready() {
+    this.props.status.ready(this)
+  }
+
+  complete() {
+    this.props.status.complete(this)
+  }
+
+  cancel() {
+    this.props.status.cancel(this)
+  }
+
+  changeStatus(newStatus: OrderStatus) {
+    this.props.status = newStatus
+  }
+
+  addItem(item: OrderItem): void {
+    const index = this.props.items.findIndex(i => i.itemId === item.itemId)
+    if (index >= 0) {
+      this.props.items[index] = this.props.items[index].increaseQuantity(item.quantity)
+    } else {
+      this.props.items.push(item)
+    }
+    this.recalculateTotal()
+    this.touch()
+  }
+
+  removeItem(itemId: string): void {
+    const index = this.props.items.findIndex(i => i.itemId === itemId)
+    if (index < 0) throw new Error('Item not found')
+    this.props.items.splice(index, 1)
+    this.recalculateTotal()
+    this.touch()
+  }
+
+  private static calculateTotal(items: OrderItem[]): Amount {
+    const totalValue = items.reduce((sum, item) => sum + item.subtotal, 0)
+    return Amount.createFromDecimal(totalValue)
+  }
+
+  private recalculateTotal(): void {
+    this.props.total = Order.calculateTotal(this.props.items)
+  }
+}

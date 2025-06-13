@@ -18,4 +18,22 @@ export class Amount {
   get cents(): number {
     return this._value
   }
+
+  multiply(factor: number): Amount {
+    const result = Math.round(this._value * factor)
+    return new Amount(result)
+  }
+
+  add(amount: Amount): Amount {
+    return new Amount(this._value + amount.cents)
+  }
+
+  subtract(amount: Amount): Amount {
+    const result = this._value - amount.cents
+    return new Amount(result)
+  }
+
+  equals(amount: Amount): boolean {
+    return this._value === amount.cents
+  }
 }
