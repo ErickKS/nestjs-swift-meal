@@ -32,6 +32,10 @@ export class InMemoryCustomerRepository implements CustomerRepository {
     return sorted.slice(start, end)
   }
 
+  async findById(id: string): Promise<Customer | null> {
+    return this.customers.find(customer => customer.id === id) || null
+  }
+
   async findByDocument(document: string): Promise<Customer | null> {
     return this.customers.find(customer => customer.document === document) || null
   }
