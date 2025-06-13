@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { Order } from './order'
 import { OrderItem } from './value-objects/order-item'
+import { OrderStatusEnum } from './value-objects/order-status/order-status'
 
 const makeItem = () =>
   OrderItem.create({
@@ -29,28 +30,35 @@ describe('Order Entity', () => {
     const order = Order.create(props)
     expect(order.customerId).toBe(props.customerId)
     expect(order.code).toBeDefined()
-    expect(order.status).toBe('PAYMENT_PENDING')
+    expect(order.status).toBe(OrderStatusEnum.PAYMENT_PENDING)
     expect(order.total).toBe(10)
     expect(order.createdAt).toBeInstanceOf(Date)
     expect(order.updatedAt).toBeInstanceOf(Date)
   })
 
-  it('should transition from payment_pending → paid → preparing → ready → completed', () => {
+  it('should transition from PAYMENT_PENDING → PAID → PREPARING → READY → COMPLETED', () => {
     const order = Order.create(makeValidProps())
     order.pay()
-    expect(order.status).toBe('PAID')
+    expect(order.status).toBe(OrderStatusEnum.PAID)
     order.prepare()
-    expect(order.status).toBe('PREPARING')
+    expect(order.status).toBe(OrderStatusEnum.PREPARING)
     order.ready()
-    expect(order.status).toBe('READY')
+    expect(order.status).toBe(OrderStatusEnum.READY)
     order.complete()
-    expect(order.status).toBe('COMPLETED')
+    expect(order.status).toBe(OrderStatusEnum.COMPLETED)
   })
 
-  it('should cancel a payment_pending order', () => {
+  it('should cancel a PAYMENT_PENDING order', () => {
     const order = Order.create(makeValidProps())
     order.cancel()
-    expect(order.status).toBe('CANCELED')
+    expect(order.status).toBe(OrderStatusEnum.CANCELED)
+  })
+
+  it('should cancel a PAID order', () => {
+    const order = Order.create(makeValidProps())
+    order.pay()
+    order.cancel()
+    expect(order.status).toBe(OrderStatusEnum.CANCELED)
   })
 
   it('should not allow paying twice', () => {
@@ -64,10 +72,37 @@ describe('Order Entity', () => {
     expect(() => order.prepare()).toThrowError('Cannot prepare before payment')
   })
 
-  it('should not allow canceling after paid', () => {
+  it('should not allow paying a READY order', () => {
     const order = Order.create(makeValidProps())
     order.pay()
-    expect(() => order.cancel()).toThrowError('Cannot cancel a paid order')
+    order.prepare()
+    order.ready()
+    expect(() => order.pay()).toThrowError('Order already paid')
+  })
+
+  it('should not allow canceling a COMPLETED order', () => {
+    const order = Order.create(makeValidProps())
+    order.pay()
+    order.prepare()
+    order.ready()
+    order.complete()
+    expect(() => order.cancel()).toThrowError('Cannot cancel a completed order')
+  })
+
+  it('should not allow preparing a COMPLETED order', () => {
+    const order = Order.create(makeValidProps())
+    order.pay()
+    order.prepare()
+    order.ready()
+    order.complete()
+    expect(() => order.prepare()).toThrowError('Order already completed')
+  })
+
+  it('should not allow transitioning from CANCELED to READY', () => {
+    const order = Order.create(makeValidProps())
+    order.cancel()
+
+    expect(() => order.ready()).toThrowError('Order was canceled')
   })
 
   it('should start with expected items and total', () => {

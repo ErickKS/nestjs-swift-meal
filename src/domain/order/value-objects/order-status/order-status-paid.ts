@@ -1,10 +1,11 @@
-import { Order } from '../order'
-import { OrderStatus } from './order-status'
+import { Order } from '../../order'
+import { OrderStatus, OrderStatusEnum } from './order-status'
+import { OrderStatusCanceled } from './order-status-canceled'
 import { OrderStatusPreparing } from './order-status-preparing'
 
 export class OrderStatusPaid implements OrderStatus {
   value(): string {
-    return 'PAID'
+    return OrderStatusEnum.PAID
   }
 
   pay(order: Order): void {
@@ -24,6 +25,6 @@ export class OrderStatusPaid implements OrderStatus {
   }
 
   cancel(order: Order): void {
-    throw new Error('Cannot cancel a paid order')
+    order.changeStatus(new OrderStatusCanceled())
   }
 }

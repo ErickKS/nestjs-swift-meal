@@ -1,10 +1,10 @@
-import { Order } from '../order'
-import { OrderStatus } from './order-status'
+import { Order } from '../../order'
+import { OrderStatus, OrderStatusEnum } from './order-status'
 import { OrderStatusCompleted } from './order-status-completed'
 
 export class OrderStatusReady implements OrderStatus {
   value(): string {
-    return 'READY'
+    return OrderStatusEnum.READY
   }
 
   pay(order: Order): void {

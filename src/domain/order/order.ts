@@ -1,11 +1,11 @@
 import { Entity } from '@/shared/kernel/entities/entity'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
-import { OrderStatusFactory } from './order-status/order-satus-factory'
-import { OrderStatus } from './order-status/order-status'
-import { OrderStatusPaymentPending } from './order-status/order-status-payment-pending'
+import { OrderStatusFactory } from './factories/order-satus-factory'
 import { Code } from './value-objects/code'
-import { OrderItem } from './value-objects/order-item'
+import { OrderItem, type OrderItemCreateProps, type OrderItemRestoreProps } from './value-objects/order-item'
+import { OrderStatus } from './value-objects/order-status/order-status'
+import { OrderStatusPaymentPending } from './value-objects/order-status/order-status-payment-pending'
 
 export interface OrderProps {
   customerId: UniqueEntityID | null
@@ -21,12 +21,7 @@ export interface CreateOrderProps {
   customerId?: string
   code?: string
   status?: string
-  items: {
-    itemId: string
-    name: string
-    unitPrice: number
-    quantity: number
-  }[]
+  items: OrderItemCreateProps[]
   createdAt?: Date
   updatedAt?: Date
 }
@@ -35,12 +30,7 @@ interface RestoreOrderProps {
   customerId?: string
   code: string
   status: string
-  items: {
-    itemId: string
-    name: string
-    unitPrice: number
-    quantity: number
-  }[]
+  items: OrderItemRestoreProps[]
   total: number
   createdAt: Date
   updatedAt: Date
@@ -138,6 +128,7 @@ export class Order extends Entity<OrderProps> {
 
   changeStatus(newStatus: OrderStatus) {
     this.props.status = newStatus
+    this.touch()
   }
 
   addItem(item: OrderItem): void {

@@ -1,4 +1,13 @@
-import { Order } from '../order'
+import { Order } from '../../order'
+
+export enum OrderStatusEnum {
+  PAYMENT_PENDING = 'PAYMENT_PENDING',
+  PAID = 'PAID',
+  PREPARING = 'PREPARING',
+  READY = 'READY',
+  COMPLETED = 'COMPLETED',
+  CANCELED = 'CANCELED',
+}
 
 export abstract class OrderStatus {
   abstract value(): string

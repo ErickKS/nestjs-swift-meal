@@ -1,11 +1,11 @@
-import { Order } from '../order'
-import { OrderStatus } from './order-status'
+import { Order } from '../../order'
+import { OrderStatus, OrderStatusEnum } from './order-status'
 import { OrderStatusCanceled } from './order-status-canceled'
 import { OrderStatusPaid } from './order-status-paid'
 
 export class OrderStatusPaymentPending implements OrderStatus {
   value(): string {
-    return 'PAYMENT_PENDING'
+    return OrderStatusEnum.PAYMENT_PENDING
   }
 
   pay(order: Order): void {
@@ -17,7 +17,7 @@ export class OrderStatusPaymentPending implements OrderStatus {
   }
 
   ready(order: Order): void {
-    throw new Error('Order must be prepared before being ready')
+    throw new Error('Cannot mark order as ready before preparing it')
   }
 
   complete(order: Order): void {

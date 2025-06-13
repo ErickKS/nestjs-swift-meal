@@ -1,10 +1,10 @@
-import { Order } from '../order'
-import { OrderStatus } from './order-status'
+import { Order } from '../../order'
+import { OrderStatus, OrderStatusEnum } from './order-status'
 import { OrderStatusReady } from './order-status-ready'
 
 export class OrderStatusPreparing implements OrderStatus {
   value(): string {
-    return 'PREPARING'
+    return OrderStatusEnum.PREPARING
   }
 
   pay(order: Order): void {
@@ -24,6 +24,6 @@ export class OrderStatusPreparing implements OrderStatus {
   }
 
   cancel(order: Order): void {
-    throw new Error('Cannot cancel a prepared order')
+    throw new Error('Cannot cancel an order that is already being prepared')
   }
 }

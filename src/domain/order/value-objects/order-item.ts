@@ -8,6 +8,20 @@ interface OrderItemProps {
   quantity: number
 }
 
+export interface OrderItemCreateProps {
+  itemId: string
+  name: string
+  unitPrice: number
+  quantity: number
+}
+
+export interface OrderItemRestoreProps {
+  itemId: string
+  name: string
+  unitPrice: number
+  quantity: number
+}
+
 export class OrderItem {
   private constructor(private readonly props: OrderItemProps) {}
 
@@ -32,12 +46,7 @@ export class OrderItem {
     return this.props.unitPrice.multiply(quantity).decimal
   }
 
-  static create(props: {
-    itemId: string
-    name: string
-    unitPrice: number
-    quantity: number
-  }): OrderItem {
+  static create(props: OrderItemCreateProps): OrderItem {
     if (props.quantity <= 0) throw new Error('Quantity must be greater than 0')
     return new OrderItem({
       itemId: UniqueEntityID.restore(props.itemId),
@@ -47,12 +56,7 @@ export class OrderItem {
     })
   }
 
-  static restore(props: {
-    itemId: string
-    name: string
-    unitPrice: number
-    quantity: number
-  }): OrderItem {
+  static restore(props: OrderItemRestoreProps): OrderItem {
     return OrderItem.create(props)
   }
 
