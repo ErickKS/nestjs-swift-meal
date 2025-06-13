@@ -10,8 +10,8 @@ datasource db {
 model Category {
   id        String    @id @default(uuid())
   name      String    @unique
-  createdAt DateTime  @map("created_at")
-  updatedAt DateTime  @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
   Item Item[]
@@ -27,11 +27,12 @@ model Item {
   price       Int
   active      Boolean   @default(true)
   categoryId  String    @map("category_id")
-  createdAt   DateTime  @map("created_at")
-  updatedAt   DateTime  @map("updated_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  category Category @relation(fields: [categoryId], references: [id])
+  category  Category    @relation(fields: [categoryId], references: [id])
+  OrderItem OrderItem[]
 
   @@map("items")
 }
@@ -41,7 +42,46 @@ model Customer {
   name      String
   document  String   @unique
   email     String   @unique
-  createdAt DateTime @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  Order Order[]
 
   @@map("customers")
+}
+
+enum OrderStatus {
+  PAYMENT_PENDING
+  PAID
+  PREPARING
+  READY
+  COMPLETED
+  CANCELED
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  customerId String?     @map("customer_id")
+  code       String      @unique
+  status     OrderStatus
+  total      Int
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  customer  Customer?   @relation(fields: [customerId], references: [id])
+  OrderItem OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  orderId   String @map("order_id")
+  itemId    String @map("item_id")
+  unitPrice Int    @map("unit_price")
+  quantity  Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  item  Item  @relation(fields: [itemId], references: [id])
+
+  @@id([orderId, itemId])
+  @@map("order_items")
 }
