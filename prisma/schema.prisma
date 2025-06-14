@@ -76,6 +76,7 @@ model Order {
 model OrderItem {
   orderId   String @map("order_id")
   itemId    String @map("item_id")
+  name      String
   unitPrice Int    @map("unit_price")
   quantity  Int
 
