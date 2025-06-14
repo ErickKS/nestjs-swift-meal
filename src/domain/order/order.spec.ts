@@ -1,27 +1,27 @@
 import { randomUUID } from 'node:crypto'
 import { Order } from './order'
-import { OrderItem } from './value-objects/order-item'
+import { OrderItem, OrderItemCreateProps } from './value-objects/order-item'
 import { OrderStatusEnum } from './value-objects/order-status/order-status'
 
-const makeItem = () =>
-  OrderItem.create({
-    itemId: 'prod-001',
-    name: 'Coca-Cola',
-    unitPrice: 5,
-    quantity: 2,
-  })
+const makeRawItem = (): OrderItemCreateProps => ({
+  itemId: 'prod-001',
+  name: 'Coca-Cola',
+  unitPriceInCents: 500,
+  quantity: 2,
+})
+const makeAnotherRawItem = (): OrderItemCreateProps => ({
+  itemId: 'prod-002',
+  name: 'Pizza',
+  unitPriceInCents: 800,
+  quantity: 1,
+})
 
-const makeAnotherItem = () =>
-  OrderItem.create({
-    itemId: 'prod-002',
-    name: 'Pizza',
-    unitPrice: 8,
-    quantity: 1,
-  })
+const makeItem = () => OrderItem.create(makeRawItem())
+const makeAnotherItem = () => OrderItem.create(makeAnotherRawItem())
 
 const makeValidProps = () => ({
   customerId: randomUUID(),
-  items: [makeItem()],
+  items: [makeRawItem()],
 })
 
 describe('Order Entity', () => {
@@ -32,6 +32,7 @@ describe('Order Entity', () => {
     expect(order.code).toBeDefined()
     expect(order.status).toBe(OrderStatusEnum.PAYMENT_PENDING)
     expect(order.total).toBe(10)
+    expect(order.totalInCents).toBe(1000)
     expect(order.createdAt).toBeInstanceOf(Date)
     expect(order.updatedAt).toBeInstanceOf(Date)
   })
@@ -106,8 +107,7 @@ describe('Order Entity', () => {
   })
 
   it('should start with expected items and total', () => {
-    const props = makeValidProps()
-    const order = Order.create(props)
+    const order = Order.create(makeValidProps())
     expect(order.items).toHaveLength(1)
     expect(order.total).toBe(10)
   })
@@ -132,13 +132,14 @@ describe('Order Entity', () => {
   it('should remove item by itemId and recalculate total', () => {
     const props = {
       customerId: randomUUID(),
-      items: [makeItem(), makeAnotherItem()],
+      items: [makeRawItem(), makeAnotherRawItem()],
     }
     const order = Order.create(props)
     order.removeItem('prod-001')
     expect(order.items).toHaveLength(1)
     expect(order.items[0].itemId).toBe('prod-002')
     expect(order.total).toBe(8)
+    expect(order.totalInCents).toBe(800)
   })
 
   it('should throw if trying to remove a non-existing item', () => {

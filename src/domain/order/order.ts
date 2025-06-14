@@ -151,8 +151,9 @@ export class Order extends Entity<OrderProps> {
   }
 
   private static calculateTotal(items: OrderItem[]): Amount {
-    const totalValue = items.reduce((sum, item) => sum + item.subtotal, 0)
-    return Amount.createFromDecimal(totalValue)
+    return items
+      .map(i => Amount.createFromCents(i.unitPrice).multiply(i.quantity))
+      .reduce((sum, amt) => sum.add(amt), Amount.createFromCents(0))
   }
 
   private recalculateTotal(): void {

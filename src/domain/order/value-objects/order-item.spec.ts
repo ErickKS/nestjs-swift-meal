@@ -5,7 +5,7 @@ describe('OrderItem Value Object', () => {
   const makeValidProps = () => ({
     itemId: 'prod-123',
     name: 'Pizza Margherita',
-    unitPrice: 29.9,
+    unitPriceInCents: 2990,
     quantity: 2,
   })
 
@@ -14,7 +14,7 @@ describe('OrderItem Value Object', () => {
     const item = OrderItem.create(props)
     expect(item.itemId).toBe(props.itemId)
     expect(item.name).toBe(props.name)
-    expect(item.unitPrice).toBeCloseTo(props.unitPrice)
+    expect(item.unitPrice).toBeCloseTo(props.unitPriceInCents)
     expect(item.quantity).toBe(props.quantity)
     expect(item.subtotal).toBeCloseTo(59.8)
   })
@@ -51,7 +51,7 @@ describe('OrderItem Value Object', () => {
     const item = OrderItem.restore(props)
     expect(item.itemId).toBe(props.itemId)
     expect(item.name).toBe(props.name)
-    expect(item.unitPrice).toBeCloseTo(props.unitPrice)
+    expect(item.unitPrice).toBeCloseTo(props.unitPriceInCents)
     expect(item.quantity).toBe(props.quantity)
   })
 })

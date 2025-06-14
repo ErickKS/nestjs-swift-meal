@@ -11,14 +11,14 @@ interface OrderItemProps {
 export interface OrderItemCreateProps {
   itemId: string
   name: string
-  unitPrice: number
+  unitPriceInCents: number
   quantity: number
 }
 
 export interface OrderItemRestoreProps {
   itemId: string
   name: string
-  unitPrice: number
+  unitPriceInCents: number
   quantity: number
 }
 
@@ -34,7 +34,7 @@ export class OrderItem {
   }
 
   get unitPrice(): number {
-    return this.props.unitPrice.decimal
+    return this.props.unitPrice.cents
   }
 
   get quantity(): number {
@@ -49,9 +49,9 @@ export class OrderItem {
   static create(props: OrderItemCreateProps): OrderItem {
     if (props.quantity <= 0) throw new Error('Quantity must be greater than 0')
     return new OrderItem({
-      itemId: UniqueEntityID.restore(props.itemId),
+      itemId: UniqueEntityID.create(props.itemId),
       name: props.name,
-      unitPrice: Amount.createFromDecimal(props.unitPrice),
+      unitPrice: Amount.createFromCents(props.unitPriceInCents),
       quantity: props.quantity,
     })
   }
