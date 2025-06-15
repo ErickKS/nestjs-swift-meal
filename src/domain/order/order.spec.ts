@@ -6,13 +6,13 @@ import { OrderStatusEnum } from './value-objects/order-status/order-status'
 const makeRawItem = (): OrderItemCreateProps => ({
   itemId: 'prod-001',
   name: 'Coca-Cola',
-  unitPriceInCents: 500,
+  unitPriceDecimal: 5,
   quantity: 2,
 })
 const makeAnotherRawItem = (): OrderItemCreateProps => ({
   itemId: 'prod-002',
   name: 'Pizza',
-  unitPriceInCents: 800,
+  unitPriceDecimal: 8,
   quantity: 1,
 })
 
@@ -31,7 +31,7 @@ describe('Order Entity', () => {
     expect(order.customerId).toBe(props.customerId)
     expect(order.code).toBeDefined()
     expect(order.status).toBe(OrderStatusEnum.PAYMENT_PENDING)
-    expect(order.total).toBe(10)
+    expect(order.totalInDecimal).toBe(10)
     expect(order.totalInCents).toBe(1000)
     expect(order.createdAt).toBeInstanceOf(Date)
     expect(order.updatedAt).toBeInstanceOf(Date)
@@ -109,7 +109,7 @@ describe('Order Entity', () => {
   it('should start with expected items and total', () => {
     const order = Order.create(makeValidProps())
     expect(order.items).toHaveLength(1)
-    expect(order.total).toBe(10)
+    expect(order.totalInDecimal).toBe(10)
   })
 
   it('should add a new item and recalculate total', () => {
@@ -117,7 +117,7 @@ describe('Order Entity', () => {
     const another = makeAnotherItem()
     order.addItem(another)
     expect(order.items).toHaveLength(2)
-    expect(order.total).toBe(18)
+    expect(order.totalInDecimal).toBe(18)
   })
 
   it('should accumulate quantity if same product is added again', () => {
@@ -126,7 +126,7 @@ describe('Order Entity', () => {
     order.addItem(duplicated)
     expect(order.items).toHaveLength(1)
     expect(order.items[0].quantity).toBe(4)
-    expect(order.total).toBe(20)
+    expect(order.totalInDecimal).toBe(20)
   })
 
   it('should remove item by itemId and recalculate total', () => {
@@ -138,7 +138,7 @@ describe('Order Entity', () => {
     order.removeItem('prod-001')
     expect(order.items).toHaveLength(1)
     expect(order.items[0].itemId).toBe('prod-002')
-    expect(order.total).toBe(8)
+    expect(order.totalInDecimal).toBe(8)
     expect(order.totalInCents).toBe(800)
   })
 

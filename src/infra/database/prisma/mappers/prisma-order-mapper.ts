@@ -16,7 +16,7 @@ export class PrismaOrderMapper {
         items: raw.OrderItem.map(item => ({
           itemId: item.itemId,
           name: item.name,
-          unitPriceInCents: item.unitPrice,
+          unitPriceCents: item.unitPrice,
           quantity: item.quantity,
         })),
         createdAt: raw.createdAt,
@@ -39,7 +39,7 @@ export class PrismaOrderMapper {
         create: order.items.map(item => ({
           itemId: item.itemId,
           name: item.name,
-          unitPrice: item.unitPrice,
+          unitPrice: item.unitPriceInCents,
           quantity: item.quantity,
         })),
       },

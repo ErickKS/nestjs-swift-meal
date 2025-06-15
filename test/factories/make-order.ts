@@ -10,11 +10,10 @@ export function makeOrder(override: Partial<CreateOrderProps> = {}, id?: string)
     {
       itemId: randomUUID(),
       name: faker.commerce.product(),
-      unitPriceInCents: Math.floor(Math.random() * (100 - 1_000 + 1)) + 1_000,
+      unitPriceDecimal: Number(faker.commerce.price()),
       quantity: 1,
     },
   ]
-  console.log(items[0].unitPriceInCents)
   const order = Order.create(
     {
       customerId: override.customerId,

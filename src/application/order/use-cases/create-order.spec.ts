@@ -41,7 +41,8 @@ describe('Create Order Use Case', () => {
     expect(result.order.code).toBeDefined()
     expect(result.order.customerId).toBe(input.customerId)
     expect(result.order.status).toBe('PAYMENT_PENDING')
-    expect(result.order.total).toBe(65)
+    expect(result.order.totalInDecimal).toBe(65)
+    expect(result.order.totalInCents).toBe(6500)
     expect(result.order.items).toHaveLength(2)
   })
 
@@ -66,14 +67,13 @@ describe('Create Order Use Case', () => {
     expect(result.order.code).toBeDefined()
     expect(result.order.customerId).toBe(null)
     expect(result.order.status).toBe('PAYMENT_PENDING')
-    expect(result.order.total).toBe(65)
+    expect(result.order.totalInDecimal).toBe(65)
+    expect(result.order.totalInCents).toBe(6500)
     expect(result.order.items).toHaveLength(2)
   })
 
   it('should throw if items is empty', async () => {
-    const input = {
-      items: [],
-    }
+    const input = { items: [] }
     await expect(() => sut.execute(input)).rejects.toThrow('At least one item is required')
   })
 

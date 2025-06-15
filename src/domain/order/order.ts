@@ -49,7 +49,7 @@ export class Order extends Entity<OrderProps> {
     return this.props.status.value()
   }
 
-  get total(): number {
+  get totalInDecimal(): number {
     return this.props.total.decimal
   }
 
@@ -76,11 +76,12 @@ export class Order extends Entity<OrderProps> {
   static create(props: CreateOrderProps, id?: string): Order {
     const items = props.items.map(OrderItem.create)
     const total = Order.calculateTotal(items)
+    const status = props.status ? OrderStatusFactory.from(props.status) : new OrderStatusPaymentPending()
     return new Order(
       {
-        customerId: props.customerId ? UniqueEntityID.restore(props.customerId) : null,
+        customerId: props.customerId ? UniqueEntityID.create(props.customerId) : null,
         code: OrderCode.create(props.code),
-        status: props.status ? OrderStatusFactory.from(props.status) : new OrderStatusPaymentPending(),
+        status,
         items,
         total,
         createdAt: props.createdAt ?? new Date(),

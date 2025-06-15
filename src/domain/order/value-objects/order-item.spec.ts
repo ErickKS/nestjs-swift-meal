@@ -5,18 +5,18 @@ describe('OrderItem Value Object', () => {
   const makeValidProps = () => ({
     itemId: 'prod-123',
     name: 'Pizza Margherita',
-    unitPriceInCents: 2990,
+    unitPriceDecimal: 29.9,
     quantity: 2,
   })
 
   it('should create a valid order item', () => {
-    const props = makeValidProps()
-    const item = OrderItem.create(props)
-    expect(item.itemId).toBe(props.itemId)
-    expect(item.name).toBe(props.name)
-    expect(item.unitPriceInCents).toBe(props.unitPriceInCents)
-    expect(item.quantity).toBe(props.quantity)
-    expect(item.subtotal).toBeCloseTo(59.8)
+    const item = OrderItem.create(makeValidProps())
+    expect(item.itemId).toBe('prod-123')
+    expect(item.name).toBe('Pizza Margherita')
+    expect(item.unitPriceInDecimal).toBe(29.9)
+    expect(item.unitPriceInCents).toBe(2990)
+    expect(item.quantity).toBe(2)
+    expect(item.subtotalInDecimal).toBe(59.8)
   })
 
   it('should throw if quantity is 0 or less', () => {
@@ -29,7 +29,7 @@ describe('OrderItem Value Object', () => {
     const updated = item.increaseQuantity(3)
     expect(item.quantity).toBe(2)
     expect(updated.quantity).toBe(5)
-    expect(updated.subtotal).toBeCloseTo(149.5)
+    expect(updated.subtotalInDecimal).toBeCloseTo(149.5)
   })
 
   it('should decrease quantity immutably', () => {
@@ -37,7 +37,7 @@ describe('OrderItem Value Object', () => {
     const updated = item.decreaseQuantity(1)
     expect(item.quantity).toBe(2)
     expect(updated.quantity).toBe(1)
-    expect(updated.subtotal).toBeCloseTo(29.9)
+    expect(updated.subtotalInDecimal).toBeCloseTo(29.9)
   })
 
   it('should throw if decrease results in quantity <= 0', () => {
@@ -47,11 +47,16 @@ describe('OrderItem Value Object', () => {
   })
 
   it('should restore successfully from raw props', () => {
-    const props = makeValidProps()
-    const item = OrderItem.restore(props)
-    expect(item.itemId).toBe(props.itemId)
-    expect(item.name).toBe(props.name)
-    expect(item.unitPriceInCents).toBe(props.unitPriceInCents)
-    expect(item.quantity).toBe(props.quantity)
+    const item = OrderItem.restore({
+      itemId: 'prod-123',
+      name: 'Pizza Margherita',
+      unitPriceCents: 2990,
+      quantity: 2,
+    })
+    expect(item.itemId).toBe('prod-123')
+    expect(item.name).toBe('Pizza Margherita')
+    expect(item.unitPriceInDecimal).toBe(29.9)
+    expect(item.unitPriceInCents).toBe(2990)
+    expect(item.quantity).toBe(2)
   })
 })

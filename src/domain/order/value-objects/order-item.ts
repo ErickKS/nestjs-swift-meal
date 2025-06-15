@@ -11,14 +11,14 @@ interface OrderItemProps {
 export interface OrderItemCreateProps {
   itemId: string
   name: string
-  unitPriceInCents: number
+  unitPriceDecimal: number
   quantity: number
 }
 
 export interface OrderItemRestoreProps {
   itemId: string
   name: string
-  unitPriceInCents: number
+  unitPriceCents: number
   quantity: number
 }
 
@@ -33,7 +33,7 @@ export class OrderItem {
     return this.props.name
   }
 
-  get unitPrice(): number {
+  get unitPriceInDecimal(): number {
     return this.props.unitPrice.decimal
   }
 
@@ -45,7 +45,7 @@ export class OrderItem {
     return this.props.quantity
   }
 
-  get subtotal(): number {
+  get subtotalInDecimal(): number {
     const quantity = this.props.quantity
     return this.props.unitPrice.multiply(quantity).decimal
   }
@@ -55,13 +55,18 @@ export class OrderItem {
     return new OrderItem({
       itemId: UniqueEntityID.create(props.itemId),
       name: props.name,
-      unitPrice: Amount.createFromCents(props.unitPriceInCents),
+      unitPrice: Amount.createFromDecimal(props.unitPriceDecimal),
       quantity: props.quantity,
     })
   }
 
   static restore(props: OrderItemRestoreProps): OrderItem {
-    return OrderItem.create(props)
+    return new OrderItem({
+      itemId: UniqueEntityID.restore(props.itemId),
+      name: props.name,
+      unitPrice: Amount.createFromCents(props.unitPriceCents),
+      quantity: props.quantity,
+    })
   }
 
   increaseQuantity(amount: number): OrderItem {

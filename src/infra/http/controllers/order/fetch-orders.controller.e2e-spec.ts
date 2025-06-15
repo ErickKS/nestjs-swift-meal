@@ -32,19 +32,16 @@ describe('[GET] /orders', () => {
       price: 15,
       categoryId: newCategory.id,
     })
-    const order = await orderFactory.makePrismaOrder({
+    await orderFactory.makePrismaOrder({
       items: [
         {
           itemId: item.id,
           name: item.name,
-          unitPriceInCents: item.priceInCents,
+          unitPriceDecimal: item.price,
           quantity: 2,
         },
       ],
     })
-    console.log('total', order.total)
-    console.log('price', order.items[0].unitPrice)
-    console.log('subtotal', order.items[0].subtotal)
     const response = await request(app.getHttpServer()).get('/orders').send()
     expect(response.statusCode).toBe(200)
     expect(response.body).toMatchObject({
@@ -66,16 +63,5 @@ describe('[GET] /orders', () => {
         }),
       ],
     })
-    // expect(response.body.data[0]).toEqual(
-    //   expect.objectContaining({
-    //     items: expect.arrayContaining([
-    //       expect.objectContaining({
-    //         itemId: item.id,
-    //         quantity: 2,
-    //         unitPriceInCents: item.priceInCents,
-    //       }),
-    //     ]),
-    //   })
-    // )
   })
 })

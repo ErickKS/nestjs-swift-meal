@@ -41,7 +41,7 @@ export class CreateOrderUseCase {
         return {
           itemId: existingItem.id,
           name: existingItem.name,
-          unitPriceInCents: existingItem.priceInCents,
+          unitPriceDecimal: existingItem.price,
           quantity: item.quantity,
         }
       })

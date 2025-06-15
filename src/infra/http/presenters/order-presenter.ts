@@ -7,15 +7,15 @@ export class OrderPresenter {
       code: order.code,
       customerId: order.customerId,
       status: order.status,
-      total: order.total,
+      total: order.totalInDecimal,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
       items: order.items.map(item => ({
         itemId: item.itemId,
         name: item.name,
-        unitPrice: item.unitPrice,
+        unitPrice: item.unitPriceInDecimal,
         quantity: item.quantity,
-        subtotal: item.subtotal,
+        subtotal: item.subtotalInDecimal,
       })),
     }
   }
