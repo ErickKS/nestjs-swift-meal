@@ -152,7 +152,7 @@ export class Order extends Entity<OrderProps> {
 
   private static calculateTotal(items: OrderItem[]): Amount {
     return items
-      .map(i => Amount.createFromCents(i.unitPrice).multiply(i.quantity))
+      .map(i => Amount.createFromCents(i.unitPriceInCents).multiply(i.quantity))
       .reduce((sum, amt) => sum.add(amt), Amount.createFromCents(0))
   }
 

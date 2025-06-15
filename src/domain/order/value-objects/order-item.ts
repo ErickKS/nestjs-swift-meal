@@ -34,6 +34,10 @@ export class OrderItem {
   }
 
   get unitPrice(): number {
+    return this.props.unitPrice.decimal
+  }
+
+  get unitPriceInCents(): number {
     return this.props.unitPrice.cents
   }
 
