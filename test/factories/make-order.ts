@@ -1,22 +1,23 @@
 import { randomUUID } from 'node:crypto'
 import { CreateOrderProps, Order } from '@/domain/order/order'
-// import { PrismaOrderMapper } from '@/infra/database/prisma/mappers/prisma-order-mapper'
-// import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { PrismaOrderMapper } from '@/infra/database/prisma/mappers/prisma-order-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
-// import { Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 export function makeOrder(override: Partial<CreateOrderProps> = {}, id?: string) {
   const items = override.items ?? [
     {
       itemId: randomUUID(),
       name: faker.commerce.product(),
-      unitPrice: 10,
+      unitPriceInCents: Math.floor(Math.random() * (100 - 1_000 + 1)) + 1_000,
       quantity: 1,
     },
   ]
+  console.log(items[0].unitPriceInCents)
   const order = Order.create(
     {
-      customerId: override.customerId ?? randomUUID(),
+      customerId: override.customerId,
       code: override.code,
       status: override.status,
       items,
@@ -28,15 +29,16 @@ export function makeOrder(override: Partial<CreateOrderProps> = {}, id?: string)
   return order
 }
 
-// @Injectable()
-// export class OrderFactory {
-//   constructor(private prisma: PrismaService) {}
+@Injectable()
+export class OrderFactory {
+  constructor(private prisma: PrismaService) {}
 
-//   async makePrismaOrder(data: Partial<CreateOrderProps> = {}): Promise<Order> {
-//     const order = makeOrder(data)
-//     await this.prisma.order.create({
-//       data: PrismaOrderMapper.toPrisma(order),
-//     })
-//     return order
-//   }
-// }
+  async makePrismaOrder(data: Partial<CreateOrderProps> = {}): Promise<Order> {
+    const order = makeOrder(data)
+    await this.prisma.order.create({
+      data: PrismaOrderMapper.toPrisma(order),
+      include: { OrderItem: true },
+    })
+    return order
+  }
+}
