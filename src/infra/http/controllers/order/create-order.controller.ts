@@ -16,8 +16,8 @@ const createOrderBodySchema = z.object({
 })
 
 const createOrderResponseSchema = z.object({
-  id: z.string().uuid(),
-  coode: z.string(),
+  orderId: z.string().uuid(),
+  code: z.string(),
 })
 
 type CreateOrderBodySchema = z.infer<typeof createOrderBodySchema>

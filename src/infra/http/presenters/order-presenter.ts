@@ -22,7 +22,7 @@ export class OrderPresenter {
 
   static toMinimalHTTP(order: Order) {
     return {
-      id: order.id,
+      orderId: order.id,
       code: order.code,
     }
   }
