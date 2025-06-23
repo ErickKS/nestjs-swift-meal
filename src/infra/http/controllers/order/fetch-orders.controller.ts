@@ -25,8 +25,9 @@ const fetchOrdersResponseSchema = z.object({
   data: z.array(
     z.object({
       id: z.string().uuid(),
-      customerId: z.string().uuid(),
       code: z.string(),
+      customerId: z.string().uuid(),
+      status: z.nativeEnum(OrderStatusEnum),
       total: z.number(),
       createdAt: z.string().datetime(),
       updatedAt: z.string().datetime(),
