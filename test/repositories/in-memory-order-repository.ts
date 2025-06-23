@@ -13,6 +13,10 @@ export class InMemoryOrderRepository implements OrderRepository {
     return filtered
   }
 
+  async findById(id: string): Promise<Order | null> {
+    return this.orders.find(order => order.id === id) || null
+  }
+
   async findMany(params: FetchOrdersSearchParams): Promise<Order[]> {
     const filtered = this.applyFilters(params)
     const { page = 1, perPage = 10, sortOrder = 'asc' } = params
