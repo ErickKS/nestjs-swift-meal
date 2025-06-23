@@ -18,6 +18,17 @@ export class PrismaOrderRepository implements OrderRepository {
     return where
   }
 
+  async findById(id: string): Promise<Order | null> {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        OrderItem: true,
+      },
+    })
+    if (!order) return null
+    return PrismaOrderMapper.toDomain(order)
+  }
+
   async findMany(params: FetchOrdersSearchParams): Promise<Order[]> {
     const { page = 1, perPage = 10, sortOrder = 'asc' } = params
     const skip = (page - 1) * perPage

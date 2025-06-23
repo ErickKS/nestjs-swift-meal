@@ -16,6 +16,7 @@ import { RestoreItemUseCase } from '@/application/item/use-cases/restore-item'
 import { UpdateItemUseCase } from '@/application/item/use-cases/update-item'
 import { CreateOrderUseCase } from '@/application/order/use-cases/create-order'
 import { FetchOrdersUseCase } from '@/application/order/use-cases/fetch-orders'
+import { GetOrderByIdUseCase } from '@/application/order/use-cases/get-order-by-id'
 import { DatabaseModule } from '../database/database.module'
 import { HealthCheckController } from './controllers/app/health-check.controller'
 import { CreateCategoryController } from './controllers/category/create-category.controller'
@@ -34,6 +35,7 @@ import { RestoreItemController } from './controllers/item/restore-item.controlle
 import { UpdateItemController } from './controllers/item/update-item.controller'
 import { CreateOrderController } from './controllers/order/create-order.controller'
 import { FetchOrdersController } from './controllers/order/fetch-orders.controller'
+import { GetOrderByIdController } from './controllers/order/get-order-by-id.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -60,6 +62,7 @@ import { FetchOrdersController } from './controllers/order/fetch-orders.controll
     // ===== Order
     CreateOrderController,
     FetchOrdersController,
+    GetOrderByIdController,
   ],
   providers: [
     // ===== Customer
@@ -82,6 +85,7 @@ import { FetchOrdersController } from './controllers/order/fetch-orders.controll
     // ===== Order
     CreateOrderUseCase,
     FetchOrdersUseCase,
+    GetOrderByIdUseCase,
   ],
 })
 export class HttpModule {}
