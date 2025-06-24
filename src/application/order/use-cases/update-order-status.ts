@@ -33,6 +33,6 @@ export class UpdateOrderStatusUseCase {
       default:
         throw new Error(`Invalid status transition: ${status}`)
     }
-    await this.orderRepository.update(order)
+    await this.orderRepository.updateWithoutItems(order)
   }
 }
