@@ -14,13 +14,12 @@ const createOrderBodySchema = z.object({
   customerId: z.string().uuid().nullable().optional(),
   items: z.array(createOrderItemSchema).min(1),
 })
+type CreateOrderBodySchema = z.infer<typeof createOrderBodySchema>
 
 const createOrderResponseSchema = z.object({
   orderId: z.string().uuid(),
   code: z.string(),
 })
-
-type CreateOrderBodySchema = z.infer<typeof createOrderBodySchema>
 
 @Controller('/orders')
 @ApiTags('Orders')

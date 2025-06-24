@@ -44,7 +44,6 @@ describe('[POST] /orders', () => {
     const orderOnDatabase = await prisma.order.findFirst({
       where: { id: orderId },
     })
-    console.log(orderOnDatabase)
     expect(orderOnDatabase).toBeTruthy()
     expect(orderOnDatabase?.code).toBeDefined()
     expect(orderOnDatabase?.customerId).toBeNull()
