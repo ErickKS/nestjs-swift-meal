@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { OrderItem } from './order-item'
+import { OrderItem, OrderItemStatusEnum } from './order-item'
 
 describe('OrderItem Value Object', () => {
   const makeValidProps = () => ({
@@ -19,44 +19,51 @@ describe('OrderItem Value Object', () => {
     expect(item.subtotalInDecimal).toBe(59.8)
   })
 
-  it('should throw if quantity is 0 or less', () => {
-    const props = { ...makeValidProps(), quantity: 0 }
-    expect(() => OrderItem.create(props)).toThrowError('Quantity must be greater than 0')
-  })
-
-  it('should increase quantity immutably', () => {
-    const item = OrderItem.create(makeValidProps())
-    const updated = item.increaseQuantity(3)
-    expect(item.quantity).toBe(2)
-    expect(updated.quantity).toBe(5)
-    expect(updated.subtotalInDecimal).toBeCloseTo(149.5)
-  })
-
-  it('should decrease quantity immutably', () => {
-    const item = OrderItem.create(makeValidProps())
-    const updated = item.decreaseQuantity(1)
-    expect(item.quantity).toBe(2)
-    expect(updated.quantity).toBe(1)
-    expect(updated.subtotalInDecimal).toBeCloseTo(29.9)
-  })
-
-  it('should throw if decrease results in quantity <= 0', () => {
-    const item = OrderItem.create(makeValidProps())
-    expect(() => item.decreaseQuantity(2)).toThrowError('Quantity must be greater than 0 after decrement')
-    expect(() => item.decreaseQuantity(3)).toThrowError('Quantity must be greater than 0 after decrement')
-  })
-
   it('should restore successfully from raw props', () => {
     const item = OrderItem.restore({
       itemId: 'prod-123',
       name: 'Pizza Margherita',
       unitPriceCents: 2990,
       quantity: 2,
+      status: 'ACTIVE',
     })
     expect(item.itemId).toBe('prod-123')
     expect(item.name).toBe('Pizza Margherita')
     expect(item.unitPriceInDecimal).toBe(29.9)
     expect(item.unitPriceInCents).toBe(2990)
     expect(item.quantity).toBe(2)
+  })
+
+  it('should throw if quantity is 0 or less', () => {
+    const props = { ...makeValidProps(), quantity: 0 }
+    expect(() => OrderItem.create(props)).toThrowError('Quantity must be greater than 0')
+  })
+
+  it('should update quantity immutably', () => {
+    const originalItem = OrderItem.create(makeValidProps())
+    const updatedItem = originalItem.updateQuantity(4)
+    expect(originalItem).not.toBe(updatedItem)
+    expect(originalItem.quantity).toBe(2)
+    expect(updatedItem.quantity).toBe(4)
+  })
+
+  it('should update status immutably', () => {
+    const originalItem = OrderItem.create(makeValidProps())
+    const updatedItem = originalItem.updateStatus(OrderItemStatusEnum.CANCELED)
+    expect(originalItem).not.toBe(updatedItem)
+    expect(originalItem.status).toBe(OrderItemStatusEnum.ACTIVE)
+    expect(updatedItem.status).toBe(OrderItemStatusEnum.CANCELED)
+  })
+
+  it('should throw when restoring with invalid status', () => {
+    expect(() =>
+      OrderItem.restore({
+        itemId: 'prod-123',
+        name: 'Pizza Margherita',
+        unitPriceCents: 2990,
+        quantity: 2,
+        status: 'INVALID_STATUS',
+      })
+    ).toThrowError('Invalid order item status: INVALID_STATUS')
   })
 })

@@ -1,11 +1,17 @@
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
 
+export enum OrderItemStatusEnum {
+  ACTIVE = 'ACTIVE',
+  CANCELED = 'CANCELED',
+}
+
 interface OrderItemProps {
   itemId: UniqueEntityID
   name: string
   unitPrice: Amount
   quantity: number
+  status: OrderItemStatusEnum
 }
 
 export interface OrderItemCreateProps {
@@ -13,6 +19,7 @@ export interface OrderItemCreateProps {
   name: string
   unitPriceDecimal: number
   quantity: number
+  status?: string
 }
 
 export interface OrderItemRestoreProps {
@@ -20,6 +27,7 @@ export interface OrderItemRestoreProps {
   name: string
   unitPriceCents: number
   quantity: number
+  status: string
 }
 
 export class OrderItem {
@@ -45,6 +53,10 @@ export class OrderItem {
     return this.props.quantity
   }
 
+  get status(): OrderItemStatusEnum {
+    return this.props.status
+  }
+
   get subtotalInDecimal(): number {
     const quantity = this.props.quantity
     return this.props.unitPrice.multiply(quantity).decimal
@@ -57,6 +69,7 @@ export class OrderItem {
       name: props.name,
       unitPrice: Amount.createFromDecimal(props.unitPriceDecimal),
       quantity: props.quantity,
+      status: props.status ? OrderItem.parseStatus(props.status) : OrderItemStatusEnum.ACTIVE,
     })
   }
 
@@ -66,22 +79,29 @@ export class OrderItem {
       name: props.name,
       unitPrice: Amount.createFromCents(props.unitPriceCents),
       quantity: props.quantity,
+      status: OrderItem.parseStatus(props.status),
     })
   }
 
-  increaseQuantity(amount: number): OrderItem {
+  updateStatus(status: OrderItemStatusEnum): OrderItem {
     return new OrderItem({
       ...this.props,
-      quantity: this.props.quantity + amount,
+      status,
     })
   }
 
-  decreaseQuantity(amount: number): OrderItem {
-    const newQuantity = this.props.quantity - amount
-    if (newQuantity <= 0) throw new Error('Quantity must be greater than 0 after decrement')
+  updateQuantity(quantity: number): OrderItem {
+    if (quantity <= 0) throw new Error('Quantity must be greater than 0')
     return new OrderItem({
       ...this.props,
-      quantity: newQuantity,
+      quantity,
     })
+  }
+
+  static parseStatus(aString: string): OrderItemStatusEnum {
+    if (aString !== OrderItemStatusEnum.ACTIVE && aString !== OrderItemStatusEnum.CANCELED) {
+      throw new Error(`Invalid order item status: ${aString}`)
+    }
+    return aString as OrderItemStatusEnum
   }
 }

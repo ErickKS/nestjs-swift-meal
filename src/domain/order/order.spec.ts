@@ -1,27 +1,24 @@
 import { randomUUID } from 'node:crypto'
 import { Order } from './order'
-import { OrderItem, OrderItemCreateProps } from './value-objects/order-item'
+import { OrderItemCreateProps, OrderItemStatusEnum } from './value-objects/order-item'
 import { OrderStatusEnum } from './value-objects/order-status/order-status'
 
-const makeRawItem = (): OrderItemCreateProps => ({
+const makeItem = (): OrderItemCreateProps => ({
   itemId: 'prod-001',
   name: 'Coca-Cola',
   unitPriceDecimal: 5,
   quantity: 2,
 })
-const makeAnotherRawItem = (): OrderItemCreateProps => ({
+const makeAnotherItem = (): OrderItemCreateProps => ({
   itemId: 'prod-002',
   name: 'Pizza',
   unitPriceDecimal: 8,
   quantity: 1,
 })
 
-const makeItem = () => OrderItem.create(makeRawItem())
-const makeAnotherItem = () => OrderItem.create(makeAnotherRawItem())
-
 const makeValidProps = () => ({
   customerId: randomUUID(),
-  items: [makeRawItem()],
+  items: [makeItem()],
 })
 
 describe('Order Entity', () => {
@@ -112,38 +109,24 @@ describe('Order Entity', () => {
     expect(order.totalInDecimal).toBe(10)
   })
 
-  it('should add a new item and recalculate total', () => {
-    const order = Order.create(makeValidProps())
-    const another = makeAnotherItem()
-    order.addItem(another)
-    expect(order.items).toHaveLength(2)
-    expect(order.totalInDecimal).toBe(18)
-  })
-
-  it('should accumulate quantity if same product is added again', () => {
-    const order = Order.create(makeValidProps())
-    const duplicated = makeItem()
-    order.addItem(duplicated)
-    expect(order.items).toHaveLength(1)
-    expect(order.items[0].quantity).toBe(4)
-    expect(order.totalInDecimal).toBe(20)
-  })
-
-  it('should remove item by itemId and recalculate total', () => {
+  it('should upddate item status, item quantity and recalculate total', () => {
     const props = {
       customerId: randomUUID(),
-      items: [makeRawItem(), makeAnotherRawItem()],
+      items: [makeItem(), makeAnotherItem()],
     }
     const order = Order.create(props)
-    order.removeItem('prod-001')
-    expect(order.items).toHaveLength(1)
-    expect(order.items[0].itemId).toBe('prod-002')
-    expect(order.totalInDecimal).toBe(8)
-    expect(order.totalInCents).toBe(800)
-  })
-
-  it('should throw if trying to remove a non-existing item', () => {
-    const order = Order.create(makeValidProps())
-    expect(() => order.removeItem('not-exists')).toThrowError('Item not found')
+    order.updateItem('prod-001', {
+      status: 'CANCELED',
+    })
+    order.updateItem('prod-002', {
+      quantity: 2,
+    })
+    expect(order.items).toHaveLength(2)
+    expect(order.items[0].status).toBe(OrderItemStatusEnum.CANCELED)
+    expect(order.items[0].quantity).toBe(2)
+    expect(order.items[1].status).toBe(OrderItemStatusEnum.ACTIVE)
+    expect(order.items[1].quantity).toBe(2)
+    expect(order.totalInDecimal).toBe(16)
+    expect(order.totalInCents).toBe(1600)
   })
 })

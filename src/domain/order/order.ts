@@ -3,7 +3,7 @@ import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
 import { OrderStatusFactory } from './factories/order-satus-factory'
 import { OrderCode } from './value-objects/order-code'
-import { OrderItem, type OrderItemCreateProps, type OrderItemRestoreProps } from './value-objects/order-item'
+import { OrderItem, type OrderItemCreateProps, type OrderItemRestoreProps, OrderItemStatusEnum } from './value-objects/order-item'
 import { OrderStatus } from './value-objects/order-status/order-status'
 import { OrderStatusPaymentPending } from './value-objects/order-status/order-status-payment-pending'
 
@@ -132,32 +132,25 @@ export class Order extends Entity<OrderProps> {
     this.touch()
   }
 
-  addItem(item: OrderItem): void {
-    const index = this.props.items.findIndex(i => i.itemId === item.itemId)
-    if (index >= 0) {
-      this.props.items[index] = this.props.items[index].increaseQuantity(item.quantity)
-    } else {
-      this.props.items.push(item)
-    }
+  updateItem(itemId: string, options: Partial<Pick<OrderItemCreateProps, 'quantity' | 'status'>>) {
+    const index = this.props.items.findIndex(item => item.itemId === itemId)
+    if (index === -1) throw new Error('Item not found')
+    let item = this.props.items[index]
+    if (options.status) item = item.updateStatus(OrderItem.parseStatus(options.status))
+    if (typeof options.quantity === 'number') item = item.updateQuantity(options.quantity)
+    this.props.items[index] = item
     this.recalculateTotal()
     this.touch()
-  }
-
-  removeItem(itemId: string): void {
-    const index = this.props.items.findIndex(i => i.itemId === itemId)
-    if (index < 0) throw new Error('Item not found')
-    this.props.items.splice(index, 1)
-    this.recalculateTotal()
-    this.touch()
-  }
-
-  private static calculateTotal(items: OrderItem[]): Amount {
-    return items
-      .map(i => Amount.createFromCents(i.unitPriceInCents).multiply(i.quantity))
-      .reduce((sum, amt) => sum.add(amt), Amount.createFromCents(0))
   }
 
   private recalculateTotal(): void {
     this.props.total = Order.calculateTotal(this.props.items)
+  }
+
+  private static calculateTotal(items: OrderItem[]): Amount {
+    return items
+      .filter(i => i.status === OrderItemStatusEnum.ACTIVE)
+      .map(i => Amount.createFromCents(i.unitPriceInCents).multiply(i.quantity))
+      .reduce((sum, amt) => sum.add(amt), Amount.createFromCents(0))
   }
 }
