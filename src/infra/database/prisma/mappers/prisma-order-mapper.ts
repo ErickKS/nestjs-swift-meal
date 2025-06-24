@@ -26,7 +26,7 @@ export class PrismaOrderMapper {
     )
   }
 
-  static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
+  static toPrismaSave(order: Order): Prisma.OrderUncheckedCreateInput {
     return {
       id: order.id,
       customerId: order.customerId,
@@ -43,6 +43,17 @@ export class PrismaOrderMapper {
           quantity: item.quantity,
         })),
       },
+    }
+  }
+
+  static toPrismaUpdate(order: Order): Prisma.OrderUncheckedUpdateInput {
+    return {
+      customerId: order.customerId,
+      code: order.code,
+      status: order.status as PrismaOrderStatus,
+      total: order.totalInCents,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
     }
   }
 }
