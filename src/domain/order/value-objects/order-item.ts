@@ -1,5 +1,6 @@
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
+import { OrderItemName } from './order-item-name'
 
 export enum OrderItemStatusEnum {
   ACTIVE = 'ACTIVE',
@@ -8,7 +9,7 @@ export enum OrderItemStatusEnum {
 
 interface OrderItemProps {
   itemId: UniqueEntityID
-  name: string
+  name: OrderItemName
   unitPrice: Amount
   quantity: number
   status: OrderItemStatusEnum
@@ -38,7 +39,7 @@ export class OrderItem {
   }
 
   get name(): string {
-    return this.props.name
+    return this.props.name.value
   }
 
   get unitPriceInDecimal(): number {
@@ -66,7 +67,7 @@ export class OrderItem {
     if (props.quantity <= 0) throw new Error('Quantity must be greater than 0')
     return new OrderItem({
       itemId: UniqueEntityID.create(props.itemId),
-      name: props.name,
+      name: OrderItemName.create(props.name),
       unitPrice: Amount.createFromDecimal(props.unitPriceDecimal),
       quantity: props.quantity,
       status: props.status ? OrderItem.parseStatus(props.status) : OrderItemStatusEnum.ACTIVE,
@@ -76,7 +77,7 @@ export class OrderItem {
   static restore(props: OrderItemRestoreProps): OrderItem {
     return new OrderItem({
       itemId: UniqueEntityID.restore(props.itemId),
-      name: props.name,
+      name: OrderItemName.restore(props.name),
       unitPrice: Amount.createFromCents(props.unitPriceCents),
       quantity: props.quantity,
       status: OrderItem.parseStatus(props.status),
