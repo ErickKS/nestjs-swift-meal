@@ -45,7 +45,7 @@ export class PrismaOrderRepository implements OrderRepository {
   }
 
   async save(order: Order): Promise<void> {
-    const data = PrismaOrderMapper.toPrismaSave(order)
+    const data = PrismaOrderMapper.toPrismaWithItems(order)
     await this.prisma.$transaction(async tx => {
       await tx.order.create({
         data,
@@ -53,11 +53,39 @@ export class PrismaOrderRepository implements OrderRepository {
     })
   }
 
-  async update(order: Order): Promise<void> {
-    const data = PrismaOrderMapper.toPrismaUpdate(order)
+  async updateWithoutItems(order: Order): Promise<void> {
+    const data = PrismaOrderMapper.toPrismaWithoutItems(order)
     await this.prisma.order.update({
       where: { id: order.id },
       data,
+    })
+  }
+
+  async updateWithItems(order: Order): Promise<void> {
+    const orderData = PrismaOrderMapper.toPrismaWithoutItems(order)
+    const itemDataList = PrismaOrderMapper.toPrismaOrderItemList(order)
+    await this.prisma.$transaction(async tx => {
+      await tx.order.update({
+        where: { id: order.id },
+        data: orderData,
+      })
+      for (const itemData of itemDataList) {
+        await tx.orderItem.upsert({
+          where: {
+            orderId_itemId: {
+              orderId: itemData.orderId,
+              itemId: itemData.itemId,
+            },
+          },
+          create: itemData,
+          update: {
+            name: itemData.name,
+            unitPrice: itemData.unitPrice,
+            quantity: itemData.quantity,
+            status: itemData.status,
+          },
+        })
+      }
     })
   }
 

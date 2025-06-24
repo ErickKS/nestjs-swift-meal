@@ -38,7 +38,7 @@ describe('[POST] /orders', () => {
     }
     const response = await request(app.getHttpServer()).post('/orders').send(input)
     expect(response.statusCode).toBe(201)
-    const { id: orderId, code } = response.body
+    const { orderId, code } = response.body
     expect(orderId).toBeDefined()
     expect(code).toBeDefined()
     const orderOnDatabase = await prisma.order.findFirst({

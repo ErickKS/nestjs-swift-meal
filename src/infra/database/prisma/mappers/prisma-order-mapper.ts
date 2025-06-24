@@ -1,5 +1,11 @@
 import { Order } from '@/domain/order/order'
-import { Prisma, Order as PrismaOrder, OrderItem as PrismaOrderItem, OrderStatus as PrismaOrderStatus } from '@prisma/client'
+import {
+  Prisma,
+  Order as PrismaOrder,
+  OrderItem as PrismaOrderItem,
+  OrderItemStatus as PrismaOrderItemStatus,
+  OrderStatus as PrismaOrderStatus,
+} from '@prisma/client'
 
 type RawOrderWithItems = PrismaOrder & {
   OrderItem: PrismaOrderItem[]
@@ -18,6 +24,7 @@ export class PrismaOrderMapper {
           name: item.name,
           unitPriceCents: item.unitPrice,
           quantity: item.quantity,
+          status: item.status,
         })),
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
@@ -26,7 +33,7 @@ export class PrismaOrderMapper {
     )
   }
 
-  static toPrismaSave(order: Order): Prisma.OrderUncheckedCreateInput {
+  static toPrismaWithItems(order: Order): Prisma.OrderUncheckedCreateInput {
     return {
       id: order.id,
       customerId: order.customerId,
@@ -46,7 +53,7 @@ export class PrismaOrderMapper {
     }
   }
 
-  static toPrismaUpdate(order: Order): Prisma.OrderUncheckedUpdateInput {
+  static toPrismaWithoutItems(order: Order): Prisma.OrderUncheckedUpdateInput {
     return {
       customerId: order.customerId,
       code: order.code,
@@ -55,5 +62,16 @@ export class PrismaOrderMapper {
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     }
+  }
+
+  static toPrismaOrderItemList(order: Order): Prisma.OrderItemUncheckedCreateInput[] {
+    return order.items.map(item => ({
+      orderId: order.id,
+      itemId: item.itemId,
+      name: item.name,
+      unitPrice: item.unitPriceInCents,
+      quantity: item.quantity,
+      status: item.status as PrismaOrderItemStatus,
+    }))
   }
 }

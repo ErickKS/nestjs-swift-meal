@@ -35,7 +35,7 @@ export class OrderFactory {
   async makePrismaOrder(data: Partial<CreateOrderProps> = {}): Promise<Order> {
     const order = makeOrder(data)
     await this.prisma.order.create({
-      data: PrismaOrderMapper.toPrismaSave(order),
+      data: PrismaOrderMapper.toPrismaWithItems(order),
       include: { OrderItem: true },
     })
     return order
