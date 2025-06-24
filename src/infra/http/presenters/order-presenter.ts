@@ -16,6 +16,7 @@ export class OrderPresenter {
         unitPrice: item.unitPriceInDecimal,
         quantity: item.quantity,
         subtotal: item.subtotalInDecimal,
+        status: item.status,
       })),
     }
   }

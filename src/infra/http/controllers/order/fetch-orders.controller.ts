@@ -1,4 +1,5 @@
 import { FetchOrdersUseCase } from '@/application/order/use-cases/fetch-orders'
+import { OrderItemStatusEnum } from '@/domain/order/value-objects/order-item'
 import { OrderStatusEnum } from '@/domain/order/value-objects/order-status/order-status'
 import { Controller, Get, HttpCode, Query, UsePipes, applyDecorators } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -38,6 +39,7 @@ const fetchOrdersResponseSchema = z.object({
           unitPrice: z.number(),
           quantity: z.number(),
           subtotal: z.number(),
+          status: z.nativeEnum(OrderItemStatusEnum),
         })
       ),
     })

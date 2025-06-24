@@ -1,4 +1,5 @@
 import { GetOrderByIdUseCase } from '@/application/order/use-cases/get-order-by-id'
+import { OrderItemStatusEnum } from '@/domain/order/value-objects/order-item'
 import { OrderStatusEnum } from '@/domain/order/value-objects/order-status/order-status'
 import { Controller, Get, HttpCode, Param, UnprocessableEntityException, UsePipes, applyDecorators } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
@@ -29,6 +30,7 @@ const getOrderByIdResponseSchema = z.object({
         unitPrice: z.number(),
         quantity: z.number(),
         subtotal: z.number(),
+        status: z.nativeEnum(OrderItemStatusEnum),
       })
     ),
   }),

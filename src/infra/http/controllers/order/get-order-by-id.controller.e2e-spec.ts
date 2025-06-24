@@ -1,4 +1,5 @@
 import { AppModule } from '@/app.module'
+import { OrderItemStatusEnum } from '@/domain/order/value-objects/order-item'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
@@ -61,6 +62,7 @@ describe('[GET] /orders/:orderId', () => {
             unitPrice: 15,
             quantity: 2,
             subtotal: 30,
+            status: OrderItemStatusEnum.ACTIVE,
           },
         ],
       },
