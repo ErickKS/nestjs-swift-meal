@@ -34,6 +34,11 @@ export class InMemoryOrderRepository implements OrderRepository {
     this.orders.push(order)
   }
 
+  async update(order: Order): Promise<void> {
+    const index = this.orders.findIndex(i => i.id === order.id)
+    if (index !== -1) this.orders[index] = order
+  }
+
   async count(params: FetchOrdersSearchParams): Promise<number> {
     return this.applyFilters(params).length
   }
