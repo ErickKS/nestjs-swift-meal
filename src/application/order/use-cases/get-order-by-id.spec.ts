@@ -16,7 +16,6 @@ describe('Get Order By Id Use Case', () => {
     await orderRepository.save(order)
     const result = await sut.execute({ orderId: 'order-1' })
     expect(result.order).toEqual(order)
-    expect(result.order.id).toEqual('order-1')
   })
 
   it('should throw if order does not exist', async () => {
