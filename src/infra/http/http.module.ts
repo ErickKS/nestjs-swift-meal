@@ -14,6 +14,11 @@ import { FetchItemsUseCase } from '@/application/item/use-cases/fetch-items'
 import { GetItemByIdUseCase } from '@/application/item/use-cases/get-item-by-id'
 import { RestoreItemUseCase } from '@/application/item/use-cases/restore-item'
 import { UpdateItemUseCase } from '@/application/item/use-cases/update-item'
+import { CreateOrderUseCase } from '@/application/order/use-cases/create-order'
+import { FetchOrdersUseCase } from '@/application/order/use-cases/fetch-orders'
+import { GetOrderByIdUseCase } from '@/application/order/use-cases/get-order-by-id'
+import { UpdateOrderItemUseCase } from '@/application/order/use-cases/update-order-item'
+import { UpdateOrderStatusUseCase } from '@/application/order/use-cases/update-order-status'
 import { DatabaseModule } from '../database/database.module'
 import { HealthCheckController } from './controllers/app/health-check.controller'
 import { CreateCategoryController } from './controllers/category/create-category.controller'
@@ -30,6 +35,11 @@ import { FetchItemsController } from './controllers/item/fetch-items.controller'
 import { GetItemByIdController } from './controllers/item/get-item-by-id.controller'
 import { RestoreItemController } from './controllers/item/restore-item.controller'
 import { UpdateItemController } from './controllers/item/update-item.controller'
+import { CreateOrderController } from './controllers/order/create-order.controller'
+import { FetchOrdersController } from './controllers/order/fetch-orders.controller'
+import { GetOrderByIdController } from './controllers/order/get-order-by-id.controller'
+import { UpdateOrderItemController } from './controllers/order/update-order-items.controller'
+import { UpdateOrderStatusController } from './controllers/order/update-order-status.controller'
 
 @Module({
   imports: [DatabaseModule],
@@ -53,6 +63,12 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
     UpdateItemController,
     DeleteItemController,
     RestoreItemController,
+    // ===== Order
+    CreateOrderController,
+    FetchOrdersController,
+    GetOrderByIdController,
+    UpdateOrderStatusController,
+    UpdateOrderItemController,
   ],
   providers: [
     // ===== Customer
@@ -72,6 +88,12 @@ import { UpdateItemController } from './controllers/item/update-item.controller'
     UpdateItemUseCase,
     DeleteItemUseCase,
     RestoreItemUseCase,
+    // ===== Order
+    CreateOrderUseCase,
+    FetchOrdersUseCase,
+    GetOrderByIdUseCase,
+    UpdateOrderStatusUseCase,
+    UpdateOrderItemUseCase,
   ],
 })
 export class HttpModule {}

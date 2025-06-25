@@ -1,5 +1,5 @@
 import { Entity } from '@/shared/kernel/entities/entity'
-import { Price } from '@/shared/kernel/value-objects/price'
+import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
 import { ItemCategoryId } from './value-objects/item-category-id'
 import { ItemCode } from './value-objects/item-code'
@@ -10,7 +10,7 @@ export interface ItemProps {
   code: ItemCode
   name: ItemName
   description: ItemDescription
-  price: Price
+  price: Amount
   active: boolean
   categoryId: ItemCategoryId
   createdAt: Date
@@ -129,7 +129,7 @@ export class Item extends Entity<ItemProps> {
         code: ItemCode.create(props.code),
         name: ItemName.create(props.name),
         description: ItemDescription.create(props.description),
-        price: Price.createFromDecimal(props.price),
+        price: Amount.createFromDecimal(props.price),
         active: props.active ?? true,
         categoryId: ItemCategoryId.create(props.categoryId),
         createdAt: props.createdAt ?? new Date(),
@@ -146,7 +146,7 @@ export class Item extends Entity<ItemProps> {
         code: ItemCode.restore(props.code),
         name: ItemName.restore(props.name),
         description: ItemDescription.restore(props.description),
-        price: Price.createFromCents(props.price),
+        price: Amount.createFromCents(props.price),
         active: props.active,
         categoryId: ItemCategoryId.restore(props.categoryId),
         createdAt: props.createdAt,
@@ -161,7 +161,7 @@ export class Item extends Entity<ItemProps> {
     if (this.isDeleted()) throw new Error('Cannot update a deleted item')
     if (props.name) this.props.name = ItemName.create(props.name)
     if (props.description) this.props.description = ItemDescription.create(props.description)
-    if (props.price !== undefined) this.props.price = Price.createFromDecimal(props.price)
+    if (props.price !== undefined) this.props.price = Amount.createFromDecimal(props.price)
     if (props.categoryId) this.props.categoryId = ItemCategoryId.create(props.categoryId)
     this.touch()
   }
