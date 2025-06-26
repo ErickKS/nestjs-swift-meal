@@ -12,4 +12,10 @@ export class Entity<Props> {
   get id(): string {
     return this._id.value
   }
+
+  public equals(entity: Entity<unknown>) {
+    if (entity === this) return true
+    if (entity.id === this.id) return true
+    return false
+  }
 }

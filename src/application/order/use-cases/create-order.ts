@@ -2,6 +2,7 @@ import { CustomerRepository } from '@/application/customer/repositories/customer
 import { ItemRepository } from '@/application/item/repositories/item-repository'
 import { Order } from '@/domain/order/order'
 import { OrderItemCreateProps } from '@/domain/order/value-objects/order-item'
+import { DomainEventDispatcher } from '@/shared/events/domain-event-dispatcher'
 import { Injectable } from '@nestjs/common'
 import { OrderRepository } from '../repositories/order-repository'
 
@@ -24,15 +25,16 @@ export class CreateOrderUseCase {
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly customerRepository: CustomerRepository,
-    private readonly itemRepository: ItemRepository
+    private readonly itemRepository: ItemRepository,
+    private readonly domainEventDispatcher: DomainEventDispatcher
   ) {}
 
   async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
+    if (!input.items || input.items.length === 0) throw new Error('At least one item is required')
     if (input.customerId) {
       const existingCustomer = await this.customerRepository.findById(input.customerId)
       if (!existingCustomer) throw new Error('Customer not found')
     }
-    if (!input.items || input.items.length === 0) throw new Error('At least one item is required')
     const enrichedItems: OrderItemCreateProps[] = await Promise.all(
       input.items.map(async item => {
         const existingItem = await this.itemRepository.findById(item.itemId)
@@ -51,6 +53,7 @@ export class CreateOrderUseCase {
       items: enrichedItems,
     })
     await this.orderRepository.save(order)
+    this.domainEventDispatcher.dispatchEventsForAggregate(order)
     return {
       order,
     }

@@ -20,6 +20,7 @@ import { GetOrderByIdUseCase } from '@/application/order/use-cases/get-order-by-
 import { UpdateOrderItemUseCase } from '@/application/order/use-cases/update-order-item'
 import { UpdateOrderStatusUseCase } from '@/application/order/use-cases/update-order-status'
 import { DatabaseModule } from '../database/database.module'
+import { EventModule } from '../events/events.module'
 import { HealthCheckController } from './controllers/app/health-check.controller'
 import { CreateCategoryController } from './controllers/category/create-category.controller'
 import { DeleteCategoryController } from './controllers/category/delete-category.controller'
@@ -42,7 +43,7 @@ import { UpdateOrderItemController } from './controllers/order/update-order-item
 import { UpdateOrderStatusController } from './controllers/order/update-order-status.controller'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, EventModule],
   controllers: [
     // ===== APP
     HealthCheckController,

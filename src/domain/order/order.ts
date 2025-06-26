@@ -1,6 +1,7 @@
-import { Entity } from '@/shared/kernel/entities/entity'
+import { AggregateRoot } from '@/shared/kernel/entities/aggregate-root'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
+import { OrderCreatedDomainEvent } from './events/order-created-event'
 import { OrderStatusFactory } from './factories/order-satus-factory'
 import { OrderCode } from './value-objects/order-code'
 import { OrderItem, type OrderItemCreateProps, type OrderItemRestoreProps, OrderItemStatusEnum } from './value-objects/order-item'
@@ -36,7 +37,7 @@ interface RestoreOrderProps {
   updatedAt: Date
 }
 
-export class Order extends Entity<OrderProps> {
+export class Order extends AggregateRoot<OrderProps> {
   get customerId(): string | null {
     return this.props.customerId?.value ?? null
   }
@@ -77,7 +78,7 @@ export class Order extends Entity<OrderProps> {
     const items = props.items.map(OrderItem.create)
     const total = Order.calculateTotal(items)
     const status = props.status ? OrderStatusFactory.from(props.status) : new OrderStatusPaymentPending()
-    return new Order(
+    const order = new Order(
       {
         customerId: props.customerId ? UniqueEntityID.create(props.customerId) : null,
         code: OrderCode.create(props.code),
@@ -89,6 +90,9 @@ export class Order extends Entity<OrderProps> {
       },
       UniqueEntityID.create(id)
     )
+    const event = new OrderCreatedDomainEvent(order)
+    order.addDomainEvent(event)
+    return order
   }
 
   static restore(props: RestoreOrderProps, id: string): Order {
