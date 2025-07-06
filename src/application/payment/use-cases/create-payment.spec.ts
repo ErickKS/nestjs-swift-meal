@@ -21,6 +21,6 @@ describe('Create Payment Use Case', () => {
     expect(paymentRepository.payments).toHaveLength(1)
     expect(result.payment.id).toBeDefined()
     expect(result.payment.status).toBe(PaymentStatusEnum.PENDING)
-    expect(result.payment.amount).toBe(100)
+    expect(result.payment.amountInCents).toBe(100)
   })
 })

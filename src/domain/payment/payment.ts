@@ -80,10 +80,10 @@ export class Payment extends Entity<PaymentProps> {
     return new Payment(
       {
         orderId: UniqueEntityID.create(props.orderId),
-        externalId: props.externalId ?? 'asdQWE123',
+        externalId: props.externalId ?? '123',
         status: props.status ?? PaymentStatusEnum.PENDING,
         qrCode: props.qrCode ?? 'asdQWE123',
-        amount: Amount.createFromDecimal(props.amount),
+        amount: Amount.createFromCents(props.amount),
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? new Date(),
       },
@@ -116,5 +116,4 @@ export class Payment extends Entity<PaymentProps> {
     this.props.status = status
     this.touch()
   }
-
 }
