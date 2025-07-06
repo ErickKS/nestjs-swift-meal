@@ -2,7 +2,7 @@ import { Entity } from '@/shared/kernel/entities/entity'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
 
-export enum PaymentStatus {
+export enum PaymentStatusEnum {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
   FAILED = 'FAILED',
@@ -11,8 +11,8 @@ export enum PaymentStatus {
 
 export interface PaymentProps {
   orderId: UniqueEntityID
-  externalId?: string
-  status: PaymentStatus
+  externalId: string
+  status: PaymentStatusEnum
   amount: Amount
   qrCode: string
   createdAt: Date
@@ -21,10 +21,10 @@ export interface PaymentProps {
 
 export interface CreatePaymentProps {
   orderId: string
-  externalId: string
-  status?: PaymentStatus
+  externalId?: string
+  status?: PaymentStatusEnum
   amount: number
-  qrCode: string
+  qrCode?: string
   createdAt?: Date
   updatedAt?: Date
 }
@@ -32,7 +32,7 @@ export interface CreatePaymentProps {
 interface RestorePaymentProps {
   orderId: string
   externalId: string
-  status: PaymentStatus
+  status: string
   amount: number
   qrCode: string
   createdAt: Date
@@ -44,11 +44,11 @@ export class Payment extends Entity<PaymentProps> {
     return this.props.orderId.value
   }
 
-  get externalId(): string | null {
-    return this.props.externalId ?? null
+  get externalId(): string {
+    return this.props.externalId
   }
 
-  get status(): PaymentStatus {
+  get status(): PaymentStatusEnum {
     return this.props.status
   }
 
@@ -80,9 +80,9 @@ export class Payment extends Entity<PaymentProps> {
     return new Payment(
       {
         orderId: UniqueEntityID.create(props.orderId),
-        externalId: props.externalId,
-        status: props.status ?? PaymentStatus.PENDING,
-        qrCode: props.qrCode,
+        externalId: props.externalId ?? 'asdQWE123',
+        status: props.status ?? PaymentStatusEnum.PENDING,
+        qrCode: props.qrCode ?? 'asdQWE123',
         amount: Amount.createFromDecimal(props.amount),
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? new Date(),
@@ -96,7 +96,7 @@ export class Payment extends Entity<PaymentProps> {
       {
         orderId: UniqueEntityID.restore(props.orderId),
         externalId: props.externalId,
-        status: props.status,
+        status: this.parseStatus(props.status),
         qrCode: props.qrCode,
         amount: Amount.createFromCents(props.amount),
         createdAt: props.createdAt,
@@ -106,8 +106,15 @@ export class Payment extends Entity<PaymentProps> {
     )
   }
 
-  updateStatus(status: PaymentStatus) {
+  private static parseStatus(aString: string): PaymentStatusEnum {
+    const isValidPaymentStatus = Object.values(PaymentStatusEnum).includes(aString as PaymentStatusEnum)
+    if (!isValidPaymentStatus) throw new Error(`Invalid payment status: ${aString}`)
+    return aString as PaymentStatusEnum
+  }
+
+  updateStatus(status: PaymentStatusEnum) {
     this.props.status = status
     this.touch()
   }
+
 }

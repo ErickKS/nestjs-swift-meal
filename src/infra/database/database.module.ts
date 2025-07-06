@@ -8,6 +8,8 @@ import { PrismaCategoryRepository } from './prisma/repositories/prisma-category-
 import { PrismaCustomerRepository } from './prisma/repositories/prisma-customer-repository'
 import { PrismaItemRepository } from './prisma/repositories/prisma-item-repository'
 import { PrismaOrderRepository } from './prisma/repositories/prisma-order-repository'
+import { PaymentRepository } from '@/application/payment/repositories/payment-repository'
+import { PrismaPaymentRepository } from './prisma/repositories/prisma-payment-repository'
 
 @Module({
   providers: [
@@ -28,7 +30,11 @@ import { PrismaOrderRepository } from './prisma/repositories/prisma-order-reposi
       provide: OrderRepository,
       useClass: PrismaOrderRepository,
     },
+    {
+      provide: PaymentRepository,
+      useClass: PrismaPaymentRepository,
+    },
   ],
-  exports: [PrismaService, CategoryRepository, ItemRepository, CustomerRepository, OrderRepository],
+  exports: [PrismaService, CategoryRepository, ItemRepository, CustomerRepository, OrderRepository, PaymentRepository],
 })
 export class DatabaseModule {}

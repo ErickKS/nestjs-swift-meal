@@ -2,7 +2,7 @@ import { CustomerRepository } from '@/application/customer/repositories/customer
 import { ItemRepository } from '@/application/item/repositories/item-repository'
 import { Order } from '@/domain/order/order'
 import { OrderItemCreateProps } from '@/domain/order/value-objects/order-item'
-import { DomainEventDispatcher } from '@/shared/events/domain-event-dispatcher'
+import { DomainEventPublisher } from '@/shared/kernel/events/domain-event-publisher'
 import { Injectable } from '@nestjs/common'
 import { OrderRepository } from '../repositories/order-repository'
 
@@ -25,8 +25,7 @@ export class CreateOrderUseCase {
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly customerRepository: CustomerRepository,
-    private readonly itemRepository: ItemRepository,
-    private readonly domainEventDispatcher: DomainEventDispatcher
+    private readonly itemRepository: ItemRepository
   ) {}
 
   async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
@@ -53,7 +52,7 @@ export class CreateOrderUseCase {
       items: enrichedItems,
     })
     await this.orderRepository.save(order)
-    this.domainEventDispatcher.dispatchEventsForAggregate(order)
+    DomainEventPublisher.instance.publishAggregateEvents(order)
     return {
       order,
     }

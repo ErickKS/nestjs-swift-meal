@@ -1,18 +1,19 @@
-import { DomainEventDispatcher } from '@/shared/events/domain-event-dispatcher'
-import { IntegrationEventBus } from '@/shared/kernel/events/integration-event-bus'
 import { Module } from '@nestjs/common'
-import { EventEmitterModule } from '@nestjs/event-emitter'
-import { NestEventEmitterBus } from './event-bus/nest-event-emitter-bus'
+import { DatabaseModule } from '../database/database.module'
+import { EventDispatcherService } from './event.dispatcher.service'
+import { OnOrderCreatedPaymentSubscriber } from '@/application/payment/subscribers/on-order-created'
+import { CreatePaymentUseCase } from '@/application/payment/use-cases/create-payment'
 
 @Module({
-  imports: [EventEmitterModule.forRoot()],
+  imports: [DatabaseModule],
   providers: [
-    DomainEventDispatcher,
-    {
-      provide: IntegrationEventBus,
-      useClass: NestEventEmitterBus,
-    },
+    EventDispatcherService,
+
+    OnOrderCreatedPaymentSubscriber,
+    // OnPaymentUpdatedOrderSubscriber,
+
+    CreatePaymentUseCase,
+    // UpdateOrderStatusByPaymentStatusUseCase,
   ],
-  exports: [DomainEventDispatcher, IntegrationEventBus],
 })
-export class EventModule {}
+export class EventsModule {}

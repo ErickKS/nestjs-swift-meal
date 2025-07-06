@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@/shared/kernel/entities/aggregate-root'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
-import { OrderCreatedDomainEvent } from './events/order-created-event'
+import { OrderCreatedEvent } from './events/order-created-event'
 import { OrderStatusFactory } from './factories/order-satus-factory'
 import { OrderCode } from './value-objects/order-code'
 import { OrderItem, type OrderItemCreateProps, type OrderItemRestoreProps, OrderItemStatusEnum } from './value-objects/order-item'
@@ -90,8 +90,7 @@ export class Order extends AggregateRoot<OrderProps> {
       },
       UniqueEntityID.create(id)
     )
-    const event = new OrderCreatedDomainEvent(order)
-    order.addDomainEvent(event)
+    order.addDomainEvent(this.createOrderCreatedEvent(order))
     return order
   }
 
@@ -156,5 +155,12 @@ export class Order extends AggregateRoot<OrderProps> {
       .filter(i => i.status === OrderItemStatusEnum.ACTIVE)
       .map(i => Amount.createFromCents(i.unitPriceInCents).multiply(i.quantity))
       .reduce((sum, amt) => sum.add(amt), Amount.createFromCents(0))
+  }
+
+  private static createOrderCreatedEvent(order: Order) {
+    return new OrderCreatedEvent({
+      orderId: order.id,
+      total: order.totalInCents,
+    })
   }
 }

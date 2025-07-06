@@ -1,16 +1,16 @@
 import { DomainEvent } from '@/shared/kernel/events/domain-event'
-import { Order } from '../order'
+import { EVENTS } from '@/shared/kernel/events/events'
 
-export class OrderCreatedDomainEvent implements DomainEvent {
-  public ocurredAt: Date
-  public order: Order
+export interface OrderCreatedEventProps {
+  orderId: string
+  total: number
+}
 
-  constructor(order: Order) {
-    this.order = order
-    this.ocurredAt = new Date()
-  }
+export class OrderCreatedEvent extends DomainEvent<OrderCreatedEventProps> {
+  payload: OrderCreatedEventProps
 
-  getAggregateId(): string {
-    return this.order.id
+  constructor(props: OrderCreatedEventProps) {
+    super(EVENTS.ORDER_CREATED)
+    this.payload = props
   }
 }

@@ -1,5 +1,3 @@
-import { DomainEventDispatcher } from '@/shared/events/domain-event-dispatcher'
-import { EventEmitter2 } from '@nestjs/event-emitter'
 import { makeCustomer } from 'test/factories/make-customer'
 import { makeItem } from 'test/factories/make-item'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
@@ -10,8 +8,6 @@ import { CreateOrderUseCase } from './create-order'
 let orderRepository: InMemoryOrderRepository
 let customerRepository: InMemoryCustomerRepository
 let itemRepository: InMemoryItemRepository
-let dispatcher: DomainEventDispatcher
-let spyDispatch: ReturnType<typeof vi.spyOn>
 let sut: CreateOrderUseCase
 
 describe('Create Order Use Case', () => {
@@ -19,12 +15,7 @@ describe('Create Order Use Case', () => {
     orderRepository = new InMemoryOrderRepository()
     customerRepository = new InMemoryCustomerRepository()
     itemRepository = new InMemoryItemRepository()
-
-    const fakeEmitter = { emit: vi.fn() } as unknown as EventEmitter2
-    dispatcher = new DomainEventDispatcher(fakeEmitter)
-    spyDispatch = vi.spyOn(dispatcher, 'dispatchEventsForAggregate')
-
-    sut = new CreateOrderUseCase(orderRepository, customerRepository, itemRepository, dispatcher)
+    sut = new CreateOrderUseCase(orderRepository, customerRepository, itemRepository)
   })
 
   it('should create an order', async () => {
@@ -53,7 +44,6 @@ describe('Create Order Use Case', () => {
     expect(result.order.totalInDecimal).toBe(65)
     expect(result.order.totalInCents).toBe(6500)
     expect(result.order.items).toHaveLength(2)
-    expect(spyDispatch).toHaveBeenCalledTimes(1)
   })
 
   it('should create an order without customerId', async () => {

@@ -69,6 +69,7 @@ model Order {
 
   customer  Customer?   @relation(fields: [customerId], references: [id])
   OrderItem OrderItem[]
+  Payment   Payment[]
 
   @@map("orders")
 }
@@ -91,4 +92,26 @@ model OrderItem {
 
   @@id([orderId, itemId])
   @@map("order_items")
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  FAILED
+  REFUNDED
+}
+
+model Payment {
+  id         String        @id @default(uuid())
+  orderId    String        @map("order_id")
+  amount     Int
+  status     PaymentStatus
+  qrCode     String
+  externalId String
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
 }
