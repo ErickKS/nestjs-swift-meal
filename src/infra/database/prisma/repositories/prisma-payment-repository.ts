@@ -17,6 +17,14 @@ export class PrismaPaymentRepository implements PaymentRepository {
     return PrismaPaymentMapper.toDomain(payment)
   }
 
+  async findByOrderId(orderId: string): Promise<Payment | null> {
+    const payment = await this.prisma.payment.findFirst({
+      where: { orderId },
+    })
+    if (!payment) return null
+    return PrismaPaymentMapper.toDomain(payment)
+  }
+
   async save(payment: Payment): Promise<void> {
     const data = PrismaPaymentMapper.toPrisma(payment)
     await this.prisma.$transaction(async tx => {
