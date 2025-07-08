@@ -8,6 +8,10 @@ export class InMemoryPaymentRepository implements PaymentRepository {
     return this.payments.find(payment => payment.id === id) || null
   }
 
+  async findByOrderId(orderId: string): Promise<Payment | null> {
+    return this.payments.find(payment => payment.orderId === orderId) || null
+  }
+
   async save(payment: Payment): Promise<void> {
     this.payments.push(payment)
   }
