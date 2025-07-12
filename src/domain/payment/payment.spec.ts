@@ -1,5 +1,6 @@
 import { randomInt, randomUUID } from 'node:crypto'
-import { CreatePaymentProps, Payment, PaymentStatusEnum } from './payment'
+import { CreatePaymentProps, Payment } from './payment'
+import { PaymentStatusEnum } from './value-objects/payment-status'
 
 function makeValidPaymentProps(override?: Partial<CreatePaymentProps>): CreatePaymentProps {
   return {

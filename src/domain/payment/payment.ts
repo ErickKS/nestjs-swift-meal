@@ -1,18 +1,12 @@
 import { Entity } from '@/shared/kernel/entities/entity'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
-
-export enum PaymentStatusEnum {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  FAILED = 'FAILED',
-  REFUNDED = 'REFUNDED',
-}
+import { PaymentStatus, PaymentStatusEnum } from './value-objects/payment-status'
 
 export interface PaymentProps {
   orderId: UniqueEntityID
   externalId: string
-  status: PaymentStatusEnum
+  status: PaymentStatus
   amount: Amount
   qrCode: string
   createdAt: Date
@@ -22,7 +16,7 @@ export interface PaymentProps {
 export interface CreatePaymentProps {
   orderId: string
   externalId?: string
-  status?: PaymentStatusEnum
+  status?: string
   amount: number
   qrCode?: string
   createdAt?: Date
@@ -49,7 +43,7 @@ export class Payment extends Entity<PaymentProps> {
   }
 
   get status(): PaymentStatusEnum {
-    return this.props.status
+    return this.props.status.value
   }
 
   get amountInDecimal(): number {
@@ -81,7 +75,7 @@ export class Payment extends Entity<PaymentProps> {
       {
         orderId: UniqueEntityID.create(props.orderId),
         externalId: props.externalId ?? '123',
-        status: props.status ?? PaymentStatusEnum.PENDING,
+        status: props.status ? PaymentStatus.create(props.status) : PaymentStatus.pending(),
         qrCode: props.qrCode ?? 'asdQWE123',
         amount: Amount.createFromCents(props.amount),
         createdAt: props.createdAt ?? new Date(),
@@ -96,7 +90,7 @@ export class Payment extends Entity<PaymentProps> {
       {
         orderId: UniqueEntityID.restore(props.orderId),
         externalId: props.externalId,
-        status: this.parseStatus(props.status),
+        status: PaymentStatus.restore(props.status),
         qrCode: props.qrCode,
         amount: Amount.createFromCents(props.amount),
         createdAt: props.createdAt,
@@ -106,13 +100,7 @@ export class Payment extends Entity<PaymentProps> {
     )
   }
 
-  private static parseStatus(aString: string): PaymentStatusEnum {
-    const isValidPaymentStatus = Object.values(PaymentStatusEnum).includes(aString as PaymentStatusEnum)
-    if (!isValidPaymentStatus) throw new Error(`Invalid payment status: ${aString}`)
-    return aString as PaymentStatusEnum
-  }
-
-  updateStatus(status: PaymentStatusEnum) {
+  updateStatus(status: PaymentStatus) {
     this.props.status = status
     this.touch()
   }
