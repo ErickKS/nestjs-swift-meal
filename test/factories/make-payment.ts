@@ -2,11 +2,18 @@ import { CreatePaymentProps, Payment } from '@/domain/payment/payment'
 import { PrismaPaymentMapper } from '@/infra/database/prisma/mappers/prisma-payment-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
-import { makeOrder } from './make-order'
 
 export function makePayment(override: Partial<CreatePaymentProps> = {}, id?: string) {
-  const order = makeOrder({}, override.orderId)
-  const payment = Payment.create({ orderId: order.id, amount: order.totalInCents }, id)
+  const defaults: CreatePaymentProps = {
+    orderId: override.orderId ?? 'order-1',
+    externalId: override.externalId ?? '123',
+    amount: override.amount ?? 1000,
+    qrCode: override.qrCode ?? 'asdQWE123',
+    status: override.status ?? 'PENDING',
+    createdAt: override.createdAt ?? new Date(),
+    updatedAt: override.updatedAt ?? new Date(),
+  }
+  const payment = Payment.create({ ...defaults, ...override }, id)
   return payment
 }
 

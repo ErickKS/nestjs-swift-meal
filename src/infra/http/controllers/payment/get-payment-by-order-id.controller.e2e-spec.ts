@@ -1,5 +1,4 @@
 import { AppModule } from '@/app.module'
-import { OrderItemStatusEnum } from '@/domain/order/value-objects/order-item'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
@@ -7,22 +6,25 @@ import request from 'supertest'
 import { CategoryFactory } from 'test/factories/make-category'
 import { ItemFactory } from 'test/factories/make-item'
 import { OrderFactory } from 'test/factories/make-order'
+import { PaymentFactory } from 'test/factories/make-payment'
 
 describe('[GET] /orders/:orderId', () => {
   let app: INestApplication
   let categoryFactory: CategoryFactory
   let itemFactory: ItemFactory
   let orderFactory: OrderFactory
+  let paymentFactory: PaymentFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [ItemFactory, CategoryFactory, OrderFactory],
+      providers: [ItemFactory, CategoryFactory, OrderFactory, PaymentFactory],
     }).compile()
     app = moduleRef.createNestApplication()
     categoryFactory = moduleRef.get(CategoryFactory)
     itemFactory = moduleRef.get(ItemFactory)
     orderFactory = moduleRef.get(OrderFactory)
+    paymentFactory = moduleRef.get(PaymentFactory)
     await app.init()
   })
 
@@ -44,27 +46,16 @@ describe('[GET] /orders/:orderId', () => {
         },
       ],
     })
-    const response = await request(app.getHttpServer()).get(`/orders/${order.id}`).send()
+    await paymentFactory.makePrismaPayment({ amount: 3000, orderId: order.id })
+    const response = await request(app.getHttpServer()).get(`/payments/orders/${order.id}`).send()
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      order: {
-        id: order.id,
-        customerId: null,
-        code: expect.any(String),
-        status: 'PAYMENT_PENDING',
-        total: 30,
+      payment: {
+        status: 'PENDING',
+        amount: 30,
+        qrCode: expect.any(String),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
-        items: [
-          {
-            itemId: item.id,
-            name: 'Product 1',
-            unitPrice: 15,
-            quantity: 2,
-            subtotal: 30,
-            status: OrderItemStatusEnum.ACTIVE,
-          },
-        ],
       },
     })
   })

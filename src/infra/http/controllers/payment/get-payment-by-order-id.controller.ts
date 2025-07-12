@@ -1,5 +1,5 @@
 import { GetPaymentByOrderIdUseCase } from '@/application/payment/use-cases/get-payment-by-order-id'
-import { PaymentStatusEnum } from '@/domain/payment/payment'
+import { PaymentStatusEnum } from '@/domain/payment/value-objects/payment-status'
 import { Controller, Get, HttpCode, Param, UnprocessableEntityException, UsePipes, applyDecorators } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { zodToOpenAPI } from 'nestjs-zod'
@@ -15,12 +15,9 @@ type GetPaymentByIdParamsSchema = z.infer<typeof getPaymentByIdParamsSchema>
 
 const getPaymentByIdResponseSchema = z.object({
   payment: z.object({
-    id: z.string().uuid(),
-    orderId: z.string().uuid(),
     status: z.nativeEnum(PaymentStatusEnum),
     amount: z.number(),
     qrCode: z.string(),
-    externalId: z.string(),
     createdAt: z.string().datetime(),
     updatedAt: z.string().datetime(),
   }),
