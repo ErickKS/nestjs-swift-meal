@@ -21,6 +21,7 @@ import { UpdateOrderItemUseCase } from '@/application/order/use-cases/update-ord
 import { UpdateOrderStatusUseCase } from '@/application/order/use-cases/update-order-status'
 import { GetPaymentByOrderIdUseCase } from '@/application/payment/use-cases/get-payment-by-order-id'
 import { DatabaseModule } from '../database/database.module'
+import { GatewaysModule } from '../gataways/gateways.module'
 import { HealthCheckController } from './controllers/app/health-check.controller'
 import { CreateCategoryController } from './controllers/category/create-category.controller'
 import { DeleteCategoryController } from './controllers/category/delete-category.controller'
@@ -42,9 +43,10 @@ import { GetOrderByIdController } from './controllers/order/get-order-by-id.cont
 import { UpdateOrderItemController } from './controllers/order/update-order-items.controller'
 import { UpdateOrderStatusController } from './controllers/order/update-order-status.controller'
 import { GetPaymentByOrderIdController } from './controllers/payment/get-payment-by-order-id.controller'
+import { PaymentWebhook } from './controllers/payment/payment-webhook.controller'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, GatewaysModule],
   controllers: [
     // ===== APP
     HealthCheckController,
@@ -73,6 +75,7 @@ import { GetPaymentByOrderIdController } from './controllers/payment/get-payment
     UpdateOrderItemController,
     // ===== Payment
     GetPaymentByOrderIdController,
+    PaymentWebhook,
   ],
   providers: [
     // ===== Customer
