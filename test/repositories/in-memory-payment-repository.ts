@@ -12,7 +12,16 @@ export class InMemoryPaymentRepository implements PaymentRepository {
     return this.payments.find(payment => payment.orderId === orderId) || null
   }
 
+  async findByExternalId(externalId: string): Promise<Payment | null> {
+    return this.payments.find(payment => payment.externalId === externalId) || null
+  }
+
   async save(payment: Payment): Promise<void> {
     this.payments.push(payment)
+  }
+
+  async update(payment: Payment): Promise<void> {
+    const index = this.payments.findIndex(i => i.id === payment.id)
+    if (index !== -1) this.payments[index] = payment
   }
 }
