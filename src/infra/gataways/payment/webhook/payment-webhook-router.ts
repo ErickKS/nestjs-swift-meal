@@ -7,7 +7,10 @@ export class PaymentWebhookRouter {
   constructor(private readonly mercadoPago: MercadoPagoWebhookHandler) {}
 
   route(payload: unknown, headers: Headers): PaymentWebhookHandler {
-    if (headers.has('x-mercado-pago-signature')) return this.mercadoPago
+    const userAgent = headers['user-agent']?.toLowerCase()
+
+    if (userAgent?.includes('mercadopago webhook')) return this.mercadoPago
+
     throw new Error('Unknown webhook source')
   }
 }

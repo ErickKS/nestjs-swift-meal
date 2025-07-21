@@ -12,6 +12,7 @@ export class MercadoPagoGateway implements PaymentGateway {
         payment_method_id: 'pix',
         description: `Payment for the order '${orderId}'`,
         transaction_amount: amount * 100,
+        // notification_url: '',
         payer: {
           email: 'comprador@teste.com',
           first_name: 'Comprador',
