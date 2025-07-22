@@ -19,7 +19,9 @@ import { FetchOrdersUseCase } from '@/application/order/use-cases/fetch-orders'
 import { GetOrderByIdUseCase } from '@/application/order/use-cases/get-order-by-id'
 import { UpdateOrderItemUseCase } from '@/application/order/use-cases/update-order-item'
 import { UpdateOrderStatusUseCase } from '@/application/order/use-cases/update-order-status'
+import { GetPaymentByOrderIdUseCase } from '@/application/payment/use-cases/get-payment-by-order-id'
 import { DatabaseModule } from '../database/database.module'
+import { GatewaysModule } from '../gataways/gateways.module'
 import { HealthCheckController } from './controllers/app/health-check.controller'
 import { CreateCategoryController } from './controllers/category/create-category.controller'
 import { DeleteCategoryController } from './controllers/category/delete-category.controller'
@@ -40,9 +42,11 @@ import { FetchOrdersController } from './controllers/order/fetch-orders.controll
 import { GetOrderByIdController } from './controllers/order/get-order-by-id.controller'
 import { UpdateOrderItemController } from './controllers/order/update-order-items.controller'
 import { UpdateOrderStatusController } from './controllers/order/update-order-status.controller'
+import { GetPaymentByOrderIdController } from './controllers/payment/get-payment-by-order-id.controller'
+import { PaymentWebhook } from './controllers/payment/payment-webhook.controller'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, GatewaysModule],
   controllers: [
     // ===== APP
     HealthCheckController,
@@ -69,6 +73,9 @@ import { UpdateOrderStatusController } from './controllers/order/update-order-st
     GetOrderByIdController,
     UpdateOrderStatusController,
     UpdateOrderItemController,
+    // ===== Payment
+    GetPaymentByOrderIdController,
+    PaymentWebhook,
   ],
   providers: [
     // ===== Customer
@@ -94,6 +101,8 @@ import { UpdateOrderStatusController } from './controllers/order/update-order-st
     GetOrderByIdUseCase,
     UpdateOrderStatusUseCase,
     UpdateOrderItemUseCase,
+    // ===== Payment
+    GetPaymentByOrderIdUseCase,
   ],
 })
 export class HttpModule {}
