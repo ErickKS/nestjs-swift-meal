@@ -26,8 +26,8 @@ describe('[PATCH] /items/:itemId', () => {
   })
 
   test('should update item details successfully', async () => {
-    const category1 = await categoryFactory.makePrismaCategory({})
-    const category2 = await categoryFactory.makePrismaCategory({})
+    const category1 = await categoryFactory.makePrismaCategory({ name: 'Category 1' })
+    const category2 = await categoryFactory.makePrismaCategory({ name: 'Category 2' })
     const item = await itemFactory.makePrismaItem({
       code: 'ITM-02',
       name: 'Old Name',
