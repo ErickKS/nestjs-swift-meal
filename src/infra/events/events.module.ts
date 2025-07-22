@@ -1,3 +1,5 @@
+import { OnPaymentStatusUpdatedOrderSubscriber } from '@/application/order/subscribers/on-payment-status-updated'
+import { UpdateOrderStatusUseCase } from '@/application/order/use-cases/update-order-status'
 import { OnOrderCreatedPaymentSubscriber } from '@/application/payment/subscribers/on-order-created'
 import { CreatePaymentUseCase } from '@/application/payment/use-cases/create-payment'
 import { Module } from '@nestjs/common'
@@ -11,10 +13,10 @@ import { EventDispatcherService } from './event.dispatcher.service'
     EventDispatcherService,
 
     OnOrderCreatedPaymentSubscriber,
-    // OnPaymentUpdatedOrderSubscriber,
+    OnPaymentStatusUpdatedOrderSubscriber,
 
     CreatePaymentUseCase,
-    // UpdateOrderStatusByPaymentStatusUseCase,
+    UpdateOrderStatusUseCase,
   ],
 })
 export class EventsModule {}

@@ -1,6 +1,7 @@
-import { Entity } from '@/shared/kernel/entities/entity'
+import { AggregateRoot } from '@/shared/kernel/entities/aggregate-root'
 import { Amount } from '@/shared/kernel/value-objects/amount'
 import { UniqueEntityID } from '@/shared/kernel/value-objects/unique-entity-id'
+import { PaymentStatusUpdatedEvent } from './events/payment-status-updated-event'
 import { PaymentStatus, PaymentStatusEnum } from './value-objects/payment-status'
 
 export interface PaymentProps {
@@ -33,7 +34,7 @@ interface RestorePaymentProps {
   updatedAt: Date
 }
 
-export class Payment extends Entity<PaymentProps> {
+export class Payment extends AggregateRoot<PaymentProps> {
   get orderId(): string {
     return this.props.orderId.value
   }
@@ -103,5 +104,14 @@ export class Payment extends Entity<PaymentProps> {
   updateStatus(status: PaymentStatus) {
     this.props.status = status
     this.touch()
+    this.addDomainEvent(Payment.createPaymentStatusUpdatedEvent(this))
+  }
+
+  private static createPaymentStatusUpdatedEvent(payment: Payment) {
+    return new PaymentStatusUpdatedEvent({
+      paymentId: payment.id,
+      orderId: payment.orderId,
+      status: payment.status,
+    })
   }
 }

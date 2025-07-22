@@ -1,4 +1,5 @@
 import { PaymentStatus } from '@/domain/payment/value-objects/payment-status'
+import { DomainEventPublisher } from '@/shared/kernel/events/domain-event-publisher'
 import { Injectable } from '@nestjs/common'
 import { PaymentRepository } from '../repositories/payment-repository'
 
@@ -16,5 +17,6 @@ export class UpdatePaymentStatusUseCase {
     if (!payment) throw new Error('Payment not found')
     payment.updateStatus(status)
     await this.paymentRepository.update(payment)
+    DomainEventPublisher.instance.publishAggregateEvents(payment)
   }
 }

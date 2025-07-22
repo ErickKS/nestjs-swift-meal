@@ -23,7 +23,7 @@ class FakePaymentUpdatedEvent extends DomainEvent<FakePaymentUpdatedEventProps> 
   payload: FakePaymentUpdatedEventProps
 
   constructor(props: FakePaymentUpdatedEventProps) {
-    super(EVENTS.PAYMENT_UPDATED)
+    super(EVENTS.PAYMENT_STATUS_UPDATED)
     this.payload = props
   }
 }
@@ -53,7 +53,7 @@ describe('DomainEventPublisher', () => {
     const subscriber1 = vi.fn()
     const subscriber2 = vi.fn()
     DomainEventPublisher.instance.subscribe('order.created', subscriber1)
-    DomainEventPublisher.instance.subscribe('payment.updated', subscriber2)
+    DomainEventPublisher.instance.subscribe('payment.status-updated', subscriber2)
     expect(DomainEventPublisher.instance['subscribers'].size).toBe(2)
     DomainEventPublisher.instance.publish(OrderCreatedEvent)
     DomainEventPublisher.instance.publish(paymentApprovedEvent)
