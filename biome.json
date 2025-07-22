@@ -44,7 +44,8 @@
         "noSvgWithoutTitle": "off"
       },
       "suspicious": {
-        "noArrayIndexKey": "info"
+        "noArrayIndexKey": "info",
+        "noExplicitAny": "info"
       },
       "style": {
         "useImportType": "off",
@@ -52,7 +53,8 @@
       },
       "complexity": {
         "noStaticOnlyClass": "off",
-        "noThisInStatic": "off"
+        "noThisInStatic": "off",
+        "useLiteralKeys": "off"
       },
       "correctness": {
         "noUnusedImports": "error"

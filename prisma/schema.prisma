@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  Item Item[]
+
+  @@map("categories")
+}
+
+model Item {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  name        String
+  description String
+  price       Int
+  active      Boolean   @default(true)
+  categoryId  String    @map("category_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  category  Category    @relation(fields: [categoryId], references: [id])
+  OrderItem OrderItem[]
+
+  @@map("items")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  document  String   @unique
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  Order Order[]
+
+  @@map("customers")
+}
+
+enum OrderStatus {
+  PAYMENT_PENDING
+  PAID
+  PREPARING
+  READY
+  COMPLETED
+  CANCELED
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  customerId String?     @map("customer_id")
+  code       String      @unique
+  status     OrderStatus
+  total      Int
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  customer  Customer?   @relation(fields: [customerId], references: [id])
+  OrderItem OrderItem[]
+  Payment   Payment[]
+
+  @@map("orders")
+}
+
+enum OrderItemStatus {
+  ACTIVE
+  CANCELED
+}
+
+model OrderItem {
+  orderId   String          @map("order_id")
+  itemId    String          @map("item_id")
+  name      String
+  unitPrice Int             @map("unit_price")
+  quantity  Int
+  status    OrderItemStatus @default(ACTIVE)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  item  Item  @relation(fields: [itemId], references: [id])
+
+  @@id([orderId, itemId])
+  @@map("order_items")
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  FAILED
+  REFUNDED
+}
+
+model Payment {
+  id         String        @id @default(uuid())
+  orderId    String        @map("order_id")
+  amount     Int
+  status     PaymentStatus
+  qrCode     String        @map("qr_code")
+  externalId String        @unique @map("external_id")
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}
