@@ -48,17 +48,17 @@ describe('Category Entity', () => {
     expect(() => category.deactivate()).toThrowError('Category already deleted')
   })
 
-  it('should reactivate a deleted category', async () => {
+  it('should restore a deleted category', async () => {
     const category = Category.create({ name: 'Reactivatable' })
     category.deactivate()
     await sleep(10)
-    category.reactivate()
+    category.restore()
     expect(category.deletedAt).toBeNull()
     expect(category.isActive()).toBe(true)
   })
 
-  it('should throw if trying to reactivate an active category', () => {
+  it('should throw if trying to restore an active category', () => {
     const category = Category.create({ name: 'Active Category' })
-    expect(() => category.reactivate()).toThrowError('Category not deleted')
+    expect(() => category.restore()).toThrowError('Category not deleted')
   })
 })

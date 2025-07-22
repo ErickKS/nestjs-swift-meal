@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common'
 import { CreateCategoryUseCase } from '@/application/category/use-cases/create-category'
 import { DeleteCategoryUseCase } from '@/application/category/use-cases/delete-category'
 import { FetchCategoriesUseCase } from '@/application/category/use-cases/fetch-categories'
-import { ReactivateCategoryUseCase } from '@/application/category/use-cases/reactivate-category'
+import { RestoreCategoryUseCase } from '@/application/category/use-cases/restore-category'
 import { UpdateCategoryUseCase } from '@/application/category/use-cases/update-category'
 import { CreateCustomerUseCase } from '@/application/customer/use-cases/create-customer'
 import { FetchCustomersUseCase } from '@/application/customer/use-cases/fetch-customers'
@@ -26,7 +26,7 @@ import { HealthCheckController } from './controllers/app/health-check.controller
 import { CreateCategoryController } from './controllers/category/create-category.controller'
 import { DeleteCategoryController } from './controllers/category/delete-category.controller'
 import { FetchCategoriesController } from './controllers/category/fetch-categories.controller'
-import { ReactivateCategoryController } from './controllers/category/reactivate-category.controller'
+import { RestoreCategoryController } from './controllers/category/restore-category.controller'
 import { UpdateCategoryController } from './controllers/category/update-category.controller'
 import { CreateCustomerController } from './controllers/customer/create-customer.controller'
 import { FetchCustomersController } from './controllers/customer/fetch-customers.controller'
@@ -59,7 +59,7 @@ import { PaymentWebhook } from './controllers/payment/payment-webhook.controller
     FetchCategoriesController,
     UpdateCategoryController,
     DeleteCategoryController,
-    ReactivateCategoryController,
+    RestoreCategoryController,
     // ===== Item
     CreateItemController,
     GetItemByIdController,
@@ -87,7 +87,7 @@ import { PaymentWebhook } from './controllers/payment/payment-webhook.controller
     FetchCategoriesUseCase,
     UpdateCategoryUseCase,
     DeleteCategoryUseCase,
-    ReactivateCategoryUseCase,
+    RestoreCategoryUseCase,
     // ===== Item
     CreateItemUseCase,
     GetItemByIdUseCase,
