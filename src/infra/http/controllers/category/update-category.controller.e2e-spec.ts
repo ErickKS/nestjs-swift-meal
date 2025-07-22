@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { CategoryFactory } from 'test/factories/make-category'
 
-describe('[PATCH] /categories', () => {
+describe('[PATCH] /categories/:categoryId', () => {
   let app: INestApplication
   let prisma: PrismaService
   let categoryFactory: CategoryFactory
@@ -25,10 +25,9 @@ describe('[PATCH] /categories', () => {
   test('should update category name', async () => {
     const newCategory = await categoryFactory.makePrismaCategory({ name: 'Category X' })
     const input = {
-      categoryId: newCategory.id,
       name: 'Category Y',
     }
-    const response = await request(app.getHttpServer()).patch('/categories').send(input)
+    const response = await request(app.getHttpServer()).patch(`/categories/${newCategory.id}`).send(input)
     expect(response.statusCode).toBe(204)
     const categoryOnDatabase = await prisma.category.findFirst({
       where: { name: 'Category Y' },
