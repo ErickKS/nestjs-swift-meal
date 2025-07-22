@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { CategoryFactory } from 'test/factories/make-category'
 
-describe('[DELETE] /categories', () => {
+describe('[DELETE] /categories/categoryId', () => {
   let app: INestApplication
   let prisma: PrismaService
   let categoryFactory: CategoryFactory
@@ -24,10 +24,7 @@ describe('[DELETE] /categories', () => {
 
   test('should delete category', async () => {
     const newCategory = await categoryFactory.makePrismaCategory()
-    const input = {
-      categoryId: newCategory.id,
-    }
-    const response = await request(app.getHttpServer()).delete('/categories').send(input)
+    const response = await request(app.getHttpServer()).delete(`/categories/${newCategory.id}`).send()
     expect(response.statusCode).toBe(204)
     const categoryOnDatabase = await prisma.category.findFirst({
       where: { id: newCategory.id },

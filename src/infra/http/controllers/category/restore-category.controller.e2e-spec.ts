@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { CategoryFactory } from 'test/factories/make-category'
 
-describe('[POST] /categories/{categoryId}/reactivate', () => {
+describe('[POST] /categories/{categoryId}/restore', () => {
   let app: INestApplication
   let prisma: PrismaService
   let categoryFactory: CategoryFactory
@@ -22,9 +22,9 @@ describe('[POST] /categories/{categoryId}/reactivate', () => {
     await app.init()
   })
 
-  test('should reactive category', async () => {
+  test('should restore category', async () => {
     const newCategory = await categoryFactory.makePrismaCategory({ deletedAt: new Date() })
-    const response = await request(app.getHttpServer()).post(`/categories/${newCategory.id}/reactivate`).send()
+    const response = await request(app.getHttpServer()).post(`/categories/${newCategory.id}/restore`).send()
     expect(response.statusCode).toBe(204)
     const categoryOnDatabase = await prisma.category.findFirst({
       where: { id: newCategory.id },

@@ -58,7 +58,7 @@ export class Category extends Entity<CategoryProps> {
     this.touch()
   }
 
-  reactivate() {
+  restore() {
     if (!this.deletedAt) throw new Error('Category not deleted')
     this.props.deletedAt = null
     this.touch()
