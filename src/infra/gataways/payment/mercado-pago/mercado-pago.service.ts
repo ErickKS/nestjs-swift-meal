@@ -4,15 +4,15 @@ import { MercadoPagoConfig, Payment } from 'mercadopago'
 
 @Injectable()
 export class MercadoPagoService {
-  private payment: Payment
+  private _payment: Payment
 
   constructor(private readonly env: EnvService) {
     const accessToken = this.env.get('MERCADO_PAGO_ACCESS_TOKEN')
     const sdk = new MercadoPagoConfig({ accessToken })
-    this.payment = new Payment(sdk)
+    this._payment = new Payment(sdk)
   }
 
-  getPayment(): Payment {
-    return this.payment
+  payment(): Payment {
+    return this._payment
   }
 }
