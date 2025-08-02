@@ -16,10 +16,10 @@ export interface PaymentProps {
 
 export interface CreatePaymentProps {
   orderId: string
-  externalId?: string
+  externalId: string
   status?: string
   amount: number
-  qrCode?: string
+  qrCode: string
   createdAt?: Date
   updatedAt?: Date
 }
@@ -75,9 +75,9 @@ export class Payment extends AggregateRoot<PaymentProps> {
     return new Payment(
       {
         orderId: UniqueEntityID.create(props.orderId),
-        externalId: props.externalId ?? '123',
+        externalId: props.externalId,
         status: props.status ? PaymentStatus.create(props.status) : PaymentStatus.pending(),
-        qrCode: props.qrCode ?? 'asdQWE123',
+        qrCode: props.qrCode,
         amount: Amount.createFromCents(props.amount),
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? new Date(),
