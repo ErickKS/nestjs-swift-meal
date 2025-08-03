@@ -1,5 +1,6 @@
 import { CategoryRepository } from '@/application/category/repositories/category-repository'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { ItemRepository } from '../repositories/item-repository'
 
 interface UpdateItemInput {
@@ -18,6 +19,7 @@ export class UpdateItemUseCase {
     private readonly categoryRepository: CategoryRepository
   ) {}
 
+  @Span(({ itemId }) => ({ attributes: { itemId } }))
   async execute({ itemId, name, description, price, active, categoryId }: UpdateItemInput): Promise<void> {
     const item = await this.itemRepository.findById(itemId)
     if (!item) throw new Error('Item not found')

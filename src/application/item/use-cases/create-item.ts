@@ -1,6 +1,7 @@
 import { CategoryRepository } from '@/application/category/repositories/category-repository'
 import { Item } from '@/domain/item/item'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { ItemRepository } from '../repositories/item-repository'
 
 interface CreateItemInput {
@@ -18,6 +19,7 @@ export class CreateItemUseCase {
     private readonly categoryRepository: CategoryRepository
   ) {}
 
+  @Span()
   async execute(input: CreateItemInput): Promise<void> {
     const existingItem = await this.itemRepository.existsByCode(input.code)
     if (existingItem) throw new Error(`Item with code '${input.code}' already exists`)
