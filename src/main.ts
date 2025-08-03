@@ -3,19 +3,19 @@ import tracingService from '@/infra/tracing/tracing'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { apiReference } from '@scalar/nestjs-api-reference'
+import { Logger } from 'nestjs-pino'
 import { patchNestJsSwagger } from 'nestjs-zod'
 import { AppModule } from './app.module'
 import { EnvService } from './infra/env/env.service'
-import { CustomLogger } from './infra/logger/custom-logger.service'
 
 async function bootstrap() {
-  await tracingService.start()
+  tracingService.start()
 
-  const app = await NestFactory.create(AppModule)
-  const configService = app.get(EnvService)
-  const port = configService.get('PORT')
+  const app = await NestFactory.create(AppModule, {
+    logger: false,
+  })
 
-  app.useLogger(app.get(CustomLogger))
+  app.useLogger(app.get(Logger))
 
   const config = new DocumentBuilder()
     .setTitle('Swift Meal')
@@ -38,6 +38,8 @@ async function bootstrap() {
     })
   )
 
+  const configService = app.get(EnvService)
+  const port = configService.get('PORT')
   await app.listen(port)
 }
 bootstrap()

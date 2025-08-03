@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { context, trace } from '@opentelemetry/api'
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino'
-import { CustomLogger } from './custom-logger.service'
 
 @Module({
   imports: [
@@ -22,7 +21,7 @@ import { CustomLogger } from './custom-logger.service'
       },
     }),
   ],
-  providers: [CustomLogger],
-  exports: [CustomLogger],
+  providers: [],
+  exports: [],
 })
 export class LoggerModule {}
