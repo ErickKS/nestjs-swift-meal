@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { OrderRepository } from '../repositories/order-repository'
 
 interface UpdateOrderItemInput {
@@ -12,6 +13,7 @@ interface UpdateOrderItemInput {
 export class UpdateOrderItemUseCase {
   constructor(private readonly orderRepository: OrderRepository) {}
 
+  @Span(({ orderId }) => ({ attributes: { orderId } }))
   async execute({ orderId, itemId, status, quantity }: UpdateOrderItemInput): Promise<void> {
     if (!quantity && !status) throw new Error('At least one property (quantity or status) must be provided to update the item')
     const order = await this.orderRepository.findById(orderId)
