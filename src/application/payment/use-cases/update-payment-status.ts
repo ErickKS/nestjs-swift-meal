@@ -1,6 +1,7 @@
 import { PaymentStatus } from '@/domain/payment/value-objects/payment-status'
 import { DomainEventPublisher } from '@/shared/kernel/events/domain-event-publisher'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { PaymentRepository } from '../repositories/payment-repository'
 
 interface UpdatePaymentStatusInput {
@@ -12,6 +13,7 @@ interface UpdatePaymentStatusInput {
 export class UpdatePaymentStatusUseCase {
   constructor(private readonly paymentRepository: PaymentRepository) {}
 
+  @Span(({ externalId }) => ({ attributes: { externalId } }))
   async execute({ externalId, status }: UpdatePaymentStatusInput): Promise<void> {
     const payment = await this.paymentRepository.findByExternalId(externalId)
     if (!payment) throw new Error('Payment not found')
