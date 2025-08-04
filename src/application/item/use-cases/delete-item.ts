@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { ItemRepository } from '../repositories/item-repository'
 
 interface DeleteItemInput {
@@ -9,6 +10,7 @@ interface DeleteItemInput {
 export class DeleteItemUseCase {
   constructor(private readonly itemRepository: ItemRepository) {}
 
+  @Span(({ itemId }) => ({ attributes: { itemId } }))
   async execute({ itemId }: DeleteItemInput): Promise<void> {
     const item = await this.itemRepository.findById(itemId)
     if (!item) throw new Error('Item not found')
