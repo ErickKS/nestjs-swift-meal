@@ -10,6 +10,7 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   jaeger:
     image: jaegertracing/all-in-one:latest
     container_name: jaeger
@@ -20,6 +21,7 @@ services:
       - '14250:14250'   # gRPC Jaeger ingest
       - '14268:14268'   # Thrift ingest
       - '14269:14269'   # Prometheus
+
 # app:
 #   build:
 #     context: .

@@ -1,4 +1,4 @@
-import tracingService from '@/infra/tracing/tracing'
+import tracingService from '@/infra/observability/tracing/tracing'
 
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
