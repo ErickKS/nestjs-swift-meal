@@ -1,5 +1,6 @@
 import { OrderStatusEnum } from '@/domain/order/value-objects/order-status/order-status'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { OrderRepository } from '../repositories/order-repository'
 
 interface UpdateOrderStatusInput {
@@ -11,6 +12,7 @@ interface UpdateOrderStatusInput {
 export class UpdateOrderStatusUseCase {
   constructor(private readonly orderRepository: OrderRepository) {}
 
+  @Span(({ orderId }) => ({ attributes: { orderId } }))
   async execute({ orderId, status }: UpdateOrderStatusInput): Promise<void> {
     const order = await this.orderRepository.findById(orderId)
     if (!order) throw new Error('Order not found')

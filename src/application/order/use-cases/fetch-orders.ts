@@ -1,6 +1,7 @@
 import { Order } from '@/domain/order/order'
 import { PaginationOuput } from '@/shared/kernel/@types/pagination-output'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { FetchOrdersSearchParams } from '../@types/fetch-orders-search-filters'
 import { OrderRepository } from '../repositories/order-repository'
 
@@ -8,6 +9,7 @@ import { OrderRepository } from '../repositories/order-repository'
 export class FetchOrdersUseCase {
   constructor(private readonly orderRepository: OrderRepository) {}
 
+  @Span()
   async execute(input: FetchOrdersSearchParams): Promise<PaginationOuput<Order>> {
     const [orders, total] = await Promise.all([this.orderRepository.findMany(input), this.orderRepository.count(input)])
     const page = input.page ?? 1

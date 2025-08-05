@@ -1,5 +1,6 @@
 import { Customer } from '@/domain/customer/customer'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { CustomerRepository } from '../repositories/customer-repository'
 
 interface CreateCustomerInput {
@@ -12,6 +13,7 @@ interface CreateCustomerInput {
 export class CreateCustomerUseCase {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
+  @Span()
   async execute(input: CreateCustomerInput): Promise<void> {
     const customerExistsByDocument = await this.customerRepository.existsByDocument(input.document)
     const customerExistsByEmail = await this.customerRepository.existsByEmail(input.email)

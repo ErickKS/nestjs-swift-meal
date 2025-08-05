@@ -4,6 +4,7 @@ import { Order } from '@/domain/order/order'
 import { OrderItemCreateProps } from '@/domain/order/value-objects/order-item'
 import { DomainEventPublisher } from '@/shared/kernel/events/domain-event-publisher'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { OrderRepository } from '../repositories/order-repository'
 
 interface CreateOrderItemInput {
@@ -28,6 +29,7 @@ export class CreateOrderUseCase {
     private readonly itemRepository: ItemRepository
   ) {}
 
+  @Span()
   async execute(input: CreateOrderInput): Promise<CreateOrderOutput> {
     if (!input.items || input.items.length === 0) throw new Error('At least one item is required')
     if (input.customerId) {

@@ -1,5 +1,6 @@
 import { Customer } from '@/domain/customer/customer'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { CustomerRepository } from '../repositories/customer-repository'
 
 interface GetCustomerByDocumentInput {
@@ -14,6 +15,7 @@ interface GetCustomerByDocumentOutput {
 export class GetCustomerByDocumentUseCase {
   constructor(private readonly customerRepository: CustomerRepository) {}
 
+  @Span()
   async execute({ document }: GetCustomerByDocumentInput): Promise<GetCustomerByDocumentOutput> {
     const customer = await this.customerRepository.findByDocument(document)
     if (!customer) throw new Error('Customer not found')

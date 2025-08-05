@@ -12,27 +12,31 @@ export class MercadoPagoGateway implements PaymentGateway {
   ) {}
 
   async createPIXPayment(orderId: string, amount: number): Promise<CreatePIXPaymentOutput> {
+    const now = new Date()
+    const TEN_MINUTES = 10 * 60 * 1000
+    const qrCodeDateOfExpiration = new Date(now.getTime() + TEN_MINUTES).toISOString()
+
     const response = await this.mercadoPagoService.payment().create({
+      requestOptions: { idempotencyKey: orderId },
       body: {
         payment_method_id: 'pix',
         description: `Payment for the order '${orderId}'`,
         transaction_amount: amount * 100,
-        installments: 1,
         notification_url: this.envService.get('MERCADO_PAGO_WEBHOOK_URL'),
         external_reference: orderId,
+        date_of_expiration: qrCodeDateOfExpiration,
       },
     })
 
     const transaction = response.point_of_interaction?.transaction_data
-    if (!transaction?.qr_code || !transaction.qr_code_base64) {
-      throw new Error('QR Code data not found in Mercado Pago response')
-    }
+    if (!transaction?.qr_code || !transaction.qr_code_base64) throw new Error('QR Code data not found in Mercado Pago response')
+    if (!response.status) throw new Error('Payment status not found in Mercado Pago response')
 
     return {
       qrCode: transaction.qr_code,
       qrCodeBase64: transaction.qr_code_base64,
       externalId: String(response.id),
-      status: response.status ?? 'PENDING',
+      status: response.status,
     }
   }
 

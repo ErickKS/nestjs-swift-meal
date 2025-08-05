@@ -1,5 +1,6 @@
 import { Category } from '@/domain/category/category'
 import { Injectable } from '@nestjs/common'
+import { Span } from 'nestjs-otel'
 import { CategoryRepository } from '../repositories/category-repository'
 
 interface UpdateCategoryInput {
@@ -15,6 +16,7 @@ interface UpdateCategoryOutput {
 export class UpdateCategoryUseCase {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
+  @Span()
   async execute({ categoryId, name }: UpdateCategoryInput): Promise<UpdateCategoryOutput> {
     const category = await this.categoryRepository.findById(categoryId)
     if (!category) throw new Error('Category not found')
