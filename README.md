@@ -15,8 +15,12 @@ It also integrates with **Mercado Pago** to generate and track PIX payments thro
 - **ORM:** [Prisma](https://www.prisma.io/)
 - **Testing:** [Vitest](https://vitest.dev/)
 - **Payment Gateway:** [Mercado Pago](https://www.mercadopago.com.br/developers/en/docs) - PIX
-- **Documentation:** Swagger
+- **Documentation:** [Scalar](https://scalar.com)
 - **Code Quality:** [Biome](https://biomejs.dev/) for linting and formatting
+- **Containerization:** [Docker](https://www.docker.com/)
+- **CI/CD:** GitHub Actions
+- **Cloud Services:** AWS (ECR)
+- **Observability:** Distributed tracing with [Jaeger](https://www.jaegertracing.io/) via OpenTelemetry
 
 ## 🧠 Key Concepts & Architecture
 
@@ -36,12 +40,15 @@ You can run Swift Meal API using either **Docker** (recommended) or your **local
 Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
 
 ```bash
-# Start the services (API + PostgreSQL)
+# Start the services (API + PostgreSQL + Jaeguer)
 docker-compose up -d --build
 ```
 
 > The API will be available at `http://localhost:3333`
-> Swagger docs at `http://localhost:3333/docs`
+
+> API docs at `http://localhost:3333/docs`
+
+> Jaeger UI at `http://localhost:16686`
 
 ### 💻 Option 2: Run Locally
 

@@ -1,24 +1,19 @@
-import { config } from 'dotenv'
-
 import { execSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { envSchema } from '@/infra/env/env'
+import { existsSync } from 'node:fs'
+import { loadEnvFile } from 'node:process'
 import { PrismaClient } from '@prisma/client'
 
-config({ path: '.env', override: true })
-config({ path: '.env.development', override: true })
-
-const env = envSchema.parse(process.env)
-
-const prisma = new PrismaClient()
+if (existsSync('.env.test')) loadEnvFile('.env.test') // override with test env vars (if file exists)
 
 function generateUniqueDatabaseURL(schemaId: string) {
-  if (!env.DATABASE_URL) throw new Error('Please provider a DATABASE_URL environment variable')
-  const url = new URL(env.DATABASE_URL)
+  if (!process.env.DATABASE_URL) throw new Error('Please provider a DATABASE_URL environment variable')
+  const url = new URL(process.env.DATABASE_URL)
   url.searchParams.set('schema', schemaId)
   return url.toString()
 }
 
+const prisma = new PrismaClient()
 const schemaId = randomUUID()
 
 beforeAll(async () => {
