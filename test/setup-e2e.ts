@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs'
 import { loadEnvFile } from 'node:process'
 import { PrismaClient } from '@prisma/client'
 
-if (existsSync('.env.development')) loadEnvFile('.env.development') // override with development env vars (if file exists)
+if (existsSync('.env.test')) loadEnvFile('.env.test') // override with test env vars (if file exists)
 
 function generateUniqueDatabaseURL(schemaId: string) {
   if (!process.env.DATABASE_URL) throw new Error('Please provider a DATABASE_URL environment variable')
