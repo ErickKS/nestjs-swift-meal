@@ -45,7 +45,9 @@ docker-compose up -d --build
 ```
 
 > The API will be available at `http://localhost:3333`
+
 > API docs at `http://localhost:3333/docs`
+
 > Jaeger UI at `http://localhost:16686`
 
 ### 💻 Option 2: Run Locally
