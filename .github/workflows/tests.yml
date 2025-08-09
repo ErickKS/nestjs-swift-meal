@@ -5,15 +5,11 @@ on:
     branches:
       - main
       - development
-  push:
-    branches:
-      - main
 
 jobs:
   build-and-test:
     name: Build and Test (Unit + Integration)
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout repository
@@ -33,8 +29,7 @@ jobs:
   e2e-tests:
     name: E2E Tests with PostgreSQL
     runs-on: ubuntu-latest
-    # if: github.event_name == 'pull_request'
-    # needs: build-and-test
+    needs: build-and-test
 
     services:
       postgres:
@@ -78,38 +73,3 @@ jobs:
 
       - name: Run E2E Tests
         run: npm run test:e2e
-
-  build-and-push:
-    name: Build and Push
-    runs-on: ubuntu-latest
-    needs: [build-and-test, e2e-tests]
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Generate SHA
-        id: generate_sha
-        run: echo "sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-
-      - name: Configure AWS Credentials (Static Keys)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login into the container registry
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.AWS_ECR_REPOSITORY_URI }}:${{ steps.generate_sha.outputs.sha }} .
-          docker tag ${{ secrets.AWS_ECR_REPOSITORY_URI }}:${{ steps.generate_sha.outputs.sha }} ${{ secrets.AWS_ECR_REPOSITORY_URI }}:latest
-
-      - name: Push Docker image to ECR
-        run: |
-          docker push ${{ secrets.AWS_ECR_REPOSITORY_URI }}:${{ steps.generate_sha.outputs.sha }}
-          docker push ${{ secrets.AWS_ECR_REPOSITORY_URI }}:latest
