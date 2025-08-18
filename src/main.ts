@@ -1,4 +1,4 @@
-import tracingService from '@/infra/observability/tracing/tracing'
+import tracingService from './infra/observability/tracing'
 
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -42,4 +42,19 @@ async function bootstrap() {
   const port = configService.get('PORT')
   await app.listen(port)
 }
+
+async function shutdown() {
+  try {
+    await tracingService.shutdown()
+    console.log('Shutdown complete')
+    process.exit(0)
+  } catch (err) {
+    console.error('Error during shutdown:', err)
+    process.exit(1)
+  }
+}
+
+process.on('SIGTERM', shutdown)
+process.on('SIGINT', shutdown)
+
 bootstrap()
