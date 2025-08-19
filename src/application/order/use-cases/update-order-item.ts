@@ -1,5 +1,5 @@
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { OrderRepository } from '../repositories/order-repository'
 
 interface UpdateOrderItemInput {

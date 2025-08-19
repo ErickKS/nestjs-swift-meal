@@ -1,6 +1,6 @@
 import { Customer } from '@/domain/customer/customer'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { CustomerRepository } from '../repositories/customer-repository'
 
 interface CreateCustomerInput {

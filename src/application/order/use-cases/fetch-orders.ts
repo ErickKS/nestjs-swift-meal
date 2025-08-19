@@ -1,7 +1,7 @@
 import { Order } from '@/domain/order/order'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { PaginationOuput } from '@/shared/kernel/@types/pagination-output'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { FetchOrdersSearchParams } from '../@types/fetch-orders-search-filters'
 import { OrderRepository } from '../repositories/order-repository'
 

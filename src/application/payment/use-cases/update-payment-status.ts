@@ -1,7 +1,7 @@
 import { PaymentStatus } from '@/domain/payment/value-objects/payment-status'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { DomainEventPublisher } from '@/shared/kernel/events/domain-event-publisher'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { PaymentRepository } from '../repositories/payment-repository'
 
 interface UpdatePaymentStatusInput {

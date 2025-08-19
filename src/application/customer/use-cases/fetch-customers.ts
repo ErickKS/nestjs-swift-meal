@@ -1,8 +1,8 @@
 import { CustomerRepository } from '@/application/customer/repositories/customer-repository'
 import { Customer } from '@/domain/customer/customer'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { PaginationOuput } from '@/shared/kernel/@types/pagination-output'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { FetchCustomersSearchParams } from '../@types/fetch-custormers-search-filters'
 
 @Injectable()

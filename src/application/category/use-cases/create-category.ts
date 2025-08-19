@@ -1,6 +1,6 @@
 import { Category } from '@/domain/category/category'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { CategoryRepository } from '../repositories/category-repository'
 
 interface CreateCategoryInput {

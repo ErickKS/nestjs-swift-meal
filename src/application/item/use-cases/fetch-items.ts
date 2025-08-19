@@ -1,7 +1,7 @@
 import { Item } from '@/domain/item/item'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { PaginationOuput } from '@/shared/kernel/@types/pagination-output'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { FetchItemsSearchParams } from '../@types/fetch-items-search-filters'
 import { ItemRepository } from '../repositories/item-repository'
 
