@@ -1,6 +1,6 @@
 import { Payment } from '@/domain/payment/payment'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { PaymentRepository } from '../repositories/payment-repository'
 
 interface GetPaymentByOrderIdInput {

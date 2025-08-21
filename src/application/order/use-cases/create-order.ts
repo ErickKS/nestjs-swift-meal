@@ -2,9 +2,9 @@ import { CustomerRepository } from '@/application/customer/repositories/customer
 import { ItemRepository } from '@/application/item/repositories/item-repository'
 import { Order } from '@/domain/order/order'
 import { OrderItemCreateProps } from '@/domain/order/value-objects/order-item'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { DomainEventPublisher } from '@/shared/kernel/events/domain-event-publisher'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { OrderRepository } from '../repositories/order-repository'
 
 interface CreateOrderItemInput {

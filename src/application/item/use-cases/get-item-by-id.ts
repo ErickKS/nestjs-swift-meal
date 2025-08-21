@@ -1,6 +1,6 @@
 import { Item } from '@/domain/item/item'
+import { Span } from '@/infra/observability/decorators/span.decorator'
 import { Injectable } from '@nestjs/common'
-import { Span } from 'nestjs-otel'
 import { ItemRepository } from '../repositories/item-repository'
 
 interface GetItemByIdInput {
