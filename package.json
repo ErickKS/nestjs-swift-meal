@@ -34,7 +34,7 @@
     "@opentelemetry/sdk-node": "^0.203.0",
     "@prisma/client": "^6.8.2",
     "@prisma/instrumentation": "^6.13.0",
-    "@scalar/nestjs-api-reference": "^0.5.12",
+    "@scalar/nestjs-api-reference": "^0.5.14",
     "@willsoto/nestjs-prometheus": "^6.0.2",
     "mercadopago": "^2.8.0",
     "nestjs-pino": "^4.4.0",

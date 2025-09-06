@@ -15,7 +15,7 @@ describe('Create Category Use Case', () => {
     const input = {
       name: 'Category Name',
     }
-    const result = await sut.execute(input)
+    await sut.execute(input)
     expect(categoryRepository.categories).toHaveLength(1)
     expect(categoryRepository.categories[0].name).toBe('Category Name')
   })
@@ -27,5 +27,16 @@ describe('Create Category Use Case', () => {
     const newCategory = Category.create(input)
     await categoryRepository.save(newCategory)
     await expect(sut.execute(input)).rejects.toThrowError('Category already exists')
+  })
+
+  it('should restore existing deleted category when creating with same name', async () => {
+    const deletedCategory = Category.create({
+      name: 'Category Name',
+      deletedAt: new Date(),
+    })
+    await categoryRepository.save(deletedCategory)
+    const input = { name: 'Category Name' }
+    await sut.execute(input)
+    expect(categoryRepository.categories[0].deletedAt).toBeNull()
   })
 })

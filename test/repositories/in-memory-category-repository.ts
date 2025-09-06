@@ -13,6 +13,10 @@ export class InMemoryCategoryRepository implements CategoryRepository {
     return this.categories.find(category => category.id === id) || null
   }
 
+  async findByName(name: string): Promise<Category | null> {
+    return this.categories.find(category => category.name === name) || null
+  }
+
   async findMany(params: FetchCategoriesSearchParams): Promise<Category[]> {
     const status = params.status ?? CategoryStatus.ACTIVE
     const sortOrder = params.sortOrder ?? 'asc'

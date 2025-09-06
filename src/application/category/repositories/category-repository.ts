@@ -4,6 +4,7 @@ import { FetchCategoriesSearchParams } from '../@types/fetch-categories-search-f
 export abstract class CategoryRepository {
   abstract existsByName(name: string): Promise<boolean>
   abstract findById(id: string): Promise<Category | null>
+  abstract findByName(id: string): Promise<Category | null>
   abstract findMany(params: FetchCategoriesSearchParams): Promise<Category[]>
   abstract save(category: Category): Promise<void>
   abstract update(category: Category): Promise<void>
