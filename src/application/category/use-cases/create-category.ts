@@ -13,9 +13,14 @@ export class CreateCategoryUseCase {
 
   @Span()
   async execute(input: CreateCategoryInput): Promise<void> {
-    const existingCategory = await this.categoryRepository.existsByName(input.name)
-    if (existingCategory) throw new Error('Category already exists')
-    const category = Category.create(input)
-    await this.categoryRepository.save(category)
+    const existingCategory = await this.categoryRepository.findByName(input.name)
+    if (existingCategory) {
+      if (existingCategory.isActive()) throw new Error('Category already exists')
+      existingCategory.restore()
+      await this.categoryRepository.update(existingCategory)
+      return
+    }
+    const newCategory = Category.create(input)
+    await this.categoryRepository.save(newCategory)
   }
 }

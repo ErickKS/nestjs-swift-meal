@@ -26,6 +26,14 @@ export class PrismaCategoryRepository implements CategoryRepository {
     return PrismaCategoryMapper.toDomain(category)
   }
 
+  async findByName(name: string): Promise<Category | null> {
+    const category = await this.prisma.category.findUnique({
+      where: { name },
+    })
+    if (!category) return null
+    return PrismaCategoryMapper.toDomain(category)
+  }
+
   async findMany(params: FetchCategoriesSearchParams): Promise<Category[]> {
     const status = params.status ?? CategoryStatus.ACTIVE
     const sortOrder = params.sortOrder ?? 'asc'
