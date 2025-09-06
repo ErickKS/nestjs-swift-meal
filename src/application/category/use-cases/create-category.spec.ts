@@ -29,7 +29,7 @@ describe('Create Category Use Case', () => {
     await expect(sut.execute(input)).rejects.toThrowError('Category already exists')
   })
 
-  it('should restore a existing category if deleted', async () => {
+  it('should restore existing deleted category when creating with same name', async () => {
     const deletedCategory = Category.create({
       name: 'Category Name',
       deletedAt: new Date(),
